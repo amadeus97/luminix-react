@@ -26,8 +26,7 @@ export default function useBrowsableApiRequest(options: UseQueryableApiRequestOp
             }
         });
         return newParams;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams]);
+    }, [searchParams, reflectSearchParams]);
 
     return useApiRequest({
         ...axiosOptions,

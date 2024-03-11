@@ -6,7 +6,7 @@ import { ErrorChangeEvent } from '@luminix/core/dist/types/Error';
 
 import useOn from './useOn';
 
-export default function useValidationErrors(): Record<string, string|undefined> {
+export default function useErrors(): Record<string, string|undefined> {
 
     // { name: 'Name is required', email: 'Email is required', ...}
     const [errors, setErrors] = React.useState(error().all());
@@ -27,6 +27,5 @@ export default function useValidationErrors(): Record<string, string|undefined> 
                 [`${_.camelCase(key)}Error`]: value
             };
         }, {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [errors]);
 }

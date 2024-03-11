@@ -2,10 +2,7 @@ import { Model, model } from '@luminix/core';
 import { ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
 import React from 'react';
 
-type Paginator = Omit<ModelPaginatedResponse, "data">;
-
-type ModelGetState = Partial<Paginator> & {
-    items: Model[] | null;
+type ModelGetState = Partial<ModelPaginatedResponse> & {
     loading: boolean;
     error: Error | null;
 };
@@ -27,24 +24,22 @@ export default function useModelGet(abstract: string | typeof Model, query?: Mod
         : abstract, [abstract]);
 
     const [state, setState] = React.useState<ModelGetState>({
-        items: null,
         loading: true,
         error: null,
     });
 
     const refresh = React.useCallback(() => {
-        setState({ loading: true, error: null, items: null });
+        setState({ loading: true, error: null });
         LeModel.get(query)
-            .then(({ data, ...pagination }) => {
-                setState({ 
-                    items: data,
+            .then((response) => {
+                setState({
                     loading: false, 
                     error: null,
-                    ...pagination,
+                    ...response,
                 });
             })
             .catch((e) => {
-                setState({ items: null, loading: false, error: e });
+                setState({ loading: false, error: e });
             });
     }, [LeModel, query]);
 

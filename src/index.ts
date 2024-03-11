@@ -6,11 +6,10 @@ import useApplyReducers from './hooks/useApplyReducers';
 import useAttributes from './hooks/useAttributes';
 import useBrowsableApiRequest from './hooks/useBrowsableApiRequest';
 import useBrowsableModelGet from './hooks/useBrowsableModelGet';
-import useModel from './hooks/useModel';
+import useErrors from './hooks/useErrors';
 import useModelFind from './hooks/useModelFind';
 import useModelGet from './hooks/useModelGet';
 import useOn from './hooks/useOn';
-import useValidationErrors from './hooks/useValidationErrors';
 
 export {
     useAddReducer,
@@ -19,11 +18,10 @@ export {
     useAttributes,
     useBrowsableApiRequest,
     useBrowsableModelGet,
-    useModel,
+    useErrors,
     useModelFind,
     useModelGet,
     useOn,
-    useValidationErrors,
 };
 
 export default ReactPlugin;
