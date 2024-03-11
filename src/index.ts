@@ -1,25 +1,29 @@
 import ReactPlugin from './ReactPlugin';
 
-import useAttributes from './hooks/useAttributes';
+import useAddReducer from './hooks/useAddReducer';
 import useApiRequest from './hooks/useApiRequest';
+import useApplyReducers from './hooks/useApplyReducers';
+import useAttributes from './hooks/useAttributes';
 import useBrowsableApiRequest from './hooks/useBrowsableApiRequest';
 import useBrowsableModelGet from './hooks/useBrowsableModelGet';
-import useValidationErrors from './hooks/useValidationErrors';
 import useModel from './hooks/useModel';
 import useModelFind from './hooks/useModelFind';
 import useModelGet from './hooks/useModelGet';
 import useOn from './hooks/useOn';
+import useValidationErrors from './hooks/useValidationErrors';
 
 export {
+    useAddReducer,
     useApiRequest,
+    useApplyReducers,
     useAttributes,
     useBrowsableApiRequest,
     useBrowsableModelGet,
-    useValidationErrors,
     useModel,
     useModelFind,
     useModelGet,
     useOn,
+    useValidationErrors,
 };
 
 export default ReactPlugin;

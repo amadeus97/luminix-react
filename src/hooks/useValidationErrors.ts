@@ -1,28 +1,24 @@
 import React from 'react';
-import { error } from '@luminix/core';
 import _ from 'lodash';
 
-// Target API
+import { error } from '@luminix/core';
+import { ErrorChangeEvent } from '@luminix/core/dist/types/Error';
 
-// const { 
-//    nameError, emailError, passwordError, passwordVerifyError 
-// } = useErrors(['name', 'email', 'password', 'password_verify']);
+import useOn from './useOn';
 
 export default function useValidationErrors(): Record<string, string|undefined> {
 
     // { name: 'Name is required', email: 'Email is required', ...}
     const [errors, setErrors] = React.useState(error().all());
 
-    React.useEffect(() => {
-        const unsubscribe = error().on('change', ({ source }) => {
-            setErrors(source.all());
-        });
-
-        return () => {
-            unsubscribe();
-            error().clear();
-        };
+    const handleChange = React.useCallback(({ source }: ErrorChangeEvent) => {
+        setErrors(source.all());
     }, []);
+
+    useOn(error(), 'change', handleChange);
+
+    // Clear errors on unmount
+    React.useEffect(() => error().clear, []);
 
     return React.useMemo(() => {
         return Object.entries(errors).reduce((acc, [key, value]) => {

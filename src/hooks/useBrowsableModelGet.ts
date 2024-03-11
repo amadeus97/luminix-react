@@ -5,14 +5,14 @@ import React from 'react';
 
 const reflectSearchParams = ['page', 'per_page', 'q', 'order_by', 'filters', 'tab'];
 
-export default function useBrowsableModelGet(abstract: string | typeof Model) {
+export default function useBrowsableModelGet(abstract: string | typeof Model, addedSearchParams: string[] = []) {
 
     const [searchParams] = useSearchParams();
 
     const query = React.useMemo(() => {
         const obj = Object.fromEntries(searchParams);
         return Object.entries(obj).reduce((acc, [key, value]) => {
-            if (reflectSearchParams.includes(key)) {
+            if (reflectSearchParams.includes(key) || addedSearchParams.includes(key)) {
                 acc[key] = value;
             }
             return acc;
