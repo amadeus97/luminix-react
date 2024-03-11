@@ -2,8 +2,10 @@ import React from 'react';
 import { AxiosRequestConfig } from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import useApiRequest from './useApiRequest';
+import { RouteGenerator } from '@luminix/core/dist/types/Route';
 
 type UseQueryableApiRequestOptions = AxiosRequestConfig & {
+    route?: RouteGenerator;
     reflectSearchParams?: string[];
 };
 
@@ -11,32 +13,25 @@ export default function useBrowsableApiRequest(options: UseQueryableApiRequestOp
 
     const {
         reflectSearchParams = [],
-        url,
-        method = 'get',
         ...axiosOptions
     } = options;
 
     const [searchParams] = useSearchParams();
 
-    const query = React.useMemo(() => {
-        const params = new URLSearchParams(searchParams);
-        // ignoreSearchParams.forEach((key) => {
-        //     params.delete(key);
-        // });
+    const params = React.useMemo(() => {
+        const newParams = {} as Record<string, string>;
         reflectSearchParams.forEach((key) => {
-            const value = params.get(key);
-            if (value) {
-                params.set(key, value);
+            if (searchParams.has(key)) {
+                newParams[key] = searchParams.get(key) as string;
             }
         });
-        return params.toString();
+        return newParams;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams]);
 
     return useApiRequest({
-        url: `${url}?${query}`,
-        method,
         ...axiosOptions,
+        params,
     });
 
 }
