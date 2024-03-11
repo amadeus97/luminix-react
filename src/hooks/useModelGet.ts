@@ -17,6 +17,33 @@ type ModelGetQuery = Record<string, unknown> & {
     minified?: boolean;
 }
 
+/**
+ * Hook to fetch list of models.
+ * **WARNING** The request will be made on mount and on every change of the query.
+ * If `query` should be a constant, declare it outside the component.
+ * If `query` should be mutable, use `React.useMemo` or pass a state value as `query`.
+ * 
+ * Usage:
+ * ```tsx
+ * import { useModelGet } from '@luminix/react';
+ * 
+ * const MODEL_GET_QUERY = {
+ *     page: 1,
+ *     per_page: 30,
+ *     q: 'search query',
+ * };
+ * 
+ * const Component = () => {
+ *    const { response, error, loading, refresh } = useModelGet('user', MODEL_GET_QUERY);
+ * };
+ * 
+ * const ComponentWithMutableQuery = () => {
+ *   const [query, setQuery] = React.useState(MODEL_GET_QUERY);
+ *   const { response, error, loading, refresh } = useModelGet('user', query);
+ *   // request will be made on mount and on every `setQuery` call
+ * };
+ * ```
+ */
 export default function useModelGet(abstract: string | typeof Model, query?: ModelGetQuery) {
     
     const LeModel = React.useMemo(() => typeof abstract === 'string' 

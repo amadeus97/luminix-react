@@ -21,28 +21,58 @@ const searchParamsFromObject = (params: Record<string, string>) => {
     return searchParams;
 };
 
+/**
+ * Custom hook to make an API request.
+ * **WARNING** The request will be made on mount and on every change of the options.
+ * If `options` should be a constant, declare it outside the component.
+ * If `options` should be mutable, use `React.useMemo` or pass a state value as `options`.
+ * 
+ * The options extends `AxiosRequestConfig` and adds a `route` property to use the 
+ * `@luminix/core` route facade.
+ * 
+ * ```tsx
+ * import { useApiRequest } from '@luminix/react';
+ * 
+ * const API_REQUEST_OPTIONS = {
+ *    route: 'luminix.user.index',
+ *    params: { per_page: 30 },
+ * };
+ * 
+ * const Component = () => {
+ *    const { response, error, loading, refresh } = useApiRequest(API_REQUEST_OPTIONS);
+ * }
+ * 
+ * const ComponentWithMutableOptions = () => {
+ *   const [options, setOptions] = React.useState(API_REQUEST_OPTIONS);
+ *   const { response, error, loading, refresh } = useApiRequest(options);
+ *   // request will be made on mount and on every `setOptions` call
+ * }
+ * ```
+ */
 const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
-    const {
-        url,
-        params,
-        route: routeGenerator,
-        ...axiosOptions
-    } = options;
-
+    
     const [state, setState] = React.useState<ApiRequestState<T>>({
         response: null,
         error: null,
         loading: false,
     });
-
-    const urlWithParams = (routeGenerator ? route().url(routeGenerator) : url) 
-        + (params ? `?${searchParamsFromObject(params).toString()}` : '');
-
-    const method = axiosOptions.method ?? (routeGenerator
-        ? route().methods(routeGenerator)[0]
-        : 'get');
-
+    
     const refresh = React.useCallback(() => {
+
+        const {
+            url,
+            params,
+            route: routeGenerator,
+            ...axiosOptions
+        } = options;
+        
+        const urlWithParams = (routeGenerator ? route().url(routeGenerator) : url) 
+            + (params ? `?${searchParamsFromObject(params).toString()}` : '');
+    
+        const method = axiosOptions.method ?? (routeGenerator
+            ? route().methods(routeGenerator)[0]
+            : 'get');
+
         (async () => {
             setState({ response: null, error: null, loading: true });
             try {
@@ -65,8 +95,7 @@ const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
             }
         })();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [urlWithParams, method]);
+    }, [options]);
 
     React.useEffect(refresh, [refresh]);
 

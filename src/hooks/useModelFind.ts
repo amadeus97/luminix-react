@@ -7,6 +7,18 @@ type ModelFindState = {
     error: Error | null;
 };
 
+/**
+ * Hook to find a model by its id.
+ * 
+ * Usage:
+ * ```tsx
+ * import { useModelFind } from '@luminix/react';
+ * 
+ * const {
+ *   item, loading, error, refresh
+ * } = useModelFind('user', 1);
+ * ```
+ */
 export default function useModelFind(abstract: string | typeof Model, id: string | number) {
     const LeModel = React.useMemo(() => typeof abstract === 'string' 
         ? model(abstract) 
