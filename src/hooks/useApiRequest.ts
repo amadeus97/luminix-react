@@ -1,7 +1,7 @@
 import React from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 import { RouteGenerator } from '@luminix/core/dist/types/Route';
-import { app, isValidationError, route } from '@luminix/core';
+import { app, config, isValidationError, log, route } from '@luminix/core';
 
 type ApiRequestState<T> = {
     response: T | null;
@@ -84,12 +84,37 @@ const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
 
                 setState({ response: response.data, error: null, loading: false });
             } catch (error: unknown) {
+                if (config('app.debug')) {
+                    log().error(error);
+                }
+
                 if (isValidationError(error)) {
                     const { errors } = error.response.data;
                     app('error').set(Object.entries(errors).reduce((acc, [key, value]) => {
                         acc[key] = value.join(' ');
                         return acc;
                     }, {} as Record<string,string>));
+                } else if (axios.isAxiosError(error)) {
+                    const axiosErrorReducer = route().axiosError;
+                    if (typeof axiosErrorReducer !== 'function') {
+                        throw new Error('Expect Route to be reducible.');
+                    }
+                    app('error').set(
+                        axiosErrorReducer({ axios: error.message }, {
+                            error, 
+                            name: routeGenerator 
+                                ? (typeof routeGenerator === 'string' ? routeGenerator : routeGenerator[0] )
+                                : null, 
+                            replace: routeGenerator 
+                                ? (typeof routeGenerator === 'string' ? null : routeGenerator[1])
+                                : null,
+                            config: {
+                                url: urlWithParams,
+                                method,
+                                ...axiosOptions,
+                            }
+                        })
+                    );
                 }
                 setState({ response: null, error, loading: false });
             }

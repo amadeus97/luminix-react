@@ -1,4 +1,4 @@
-import { Model, model } from '@luminix/core';
+import { Model, config, log, model } from '@luminix/core';
 import { ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
 import React from 'react';
 
@@ -59,6 +59,7 @@ export default function useModelGet(abstract: string | typeof Model, query?: Mod
         setState({ loading: true, error: null });
         LeModel.get(query)
             .then((response) => {
+                console.log(response);
                 setState({
                     loading: false, 
                     error: null,
@@ -66,6 +67,9 @@ export default function useModelGet(abstract: string | typeof Model, query?: Mod
                 });
             })
             .catch((e) => {
+                if (config('app.debug')) {
+                    log().error(e);
+                }
                 setState({ loading: false, error: e });
             });
     }, [LeModel, query]);
