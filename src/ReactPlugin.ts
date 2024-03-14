@@ -1,4 +1,4 @@
-import { Plugin } from "@luminix/core";
+import { Plugin, app } from "@luminix/core";
 import { AppFacades } from "@luminix/core/dist/types/App";
 
 
@@ -13,6 +13,12 @@ export default class ReactPlugin extends Plugin {
             const regex = /{([^}]+)}/g;
 
             return `/${url.replace(regex, ':$1')}`;
+        });
+    }
+
+    static selfRegister() {
+        app().on('init', ({ register }) => {
+            register(new ReactPlugin());
         });
     }
 

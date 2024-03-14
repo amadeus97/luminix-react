@@ -1,12 +1,19 @@
 import React from 'react';
 import { ReducibleInterface } from '@luminix/core';
+import useCollection from './useCollection';
+import { Collection } from '@luminix/core/dist/contracts/Collection';
+import { Reducer } from '@luminix/core/dist/types/Reducer';
+
+
+const transform = (collection: Collection<Reducer>) => {
+    return collection.pluck('callback');
+};
 
 /**
  * Applies a reducer to the reducible during the component lifecycle.
- * **WARNING**: The reducer must be a memoized function, using React.useCallback
- * to avoid unnecessary re-renders. Value and params must be memoized as well with
- * React.useMemo or using a state. For the params, prefer primitive values or 
- * known immutable objects.
+ * **WARNING**: Value and params must be memoized using React.useMemo 
+ * or a state to avoid unnecessary re-renders. Prefer primitive values 
+ * or known immutable objects.
  * 
  * Returns the result of the reducer.
  */
@@ -17,12 +24,14 @@ export default function useApplyReducers(
     ...params: unknown[]
 ) {
 
-    return React.useMemo(() => {
-        const reducer = reducible[name];
-        if (typeof reducer !== 'function') {
-            throw new Error(`Expect ${reducible} to be Reducible`);
-        }
-        return reducer(value, ...params);
+    const reducers = useCollection(reducible.getReducer(name), transform);
+
+    const result = React.useMemo(() => {
+        return reducers.reduce((acc, reducer) => {
+            return reducer(acc, ...params);
+        }, value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [reducible, name, value, ...params]);
+    }, [reducers, value, ...params]);
+
+    return result;
 }
