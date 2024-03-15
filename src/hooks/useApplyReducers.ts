@@ -3,6 +3,7 @@ import { ReducibleInterface } from '@luminix/core';
 import useCollection from './useCollection';
 import { Collection } from '@luminix/core/dist/contracts/Collection';
 import { Reducer } from '@luminix/core/dist/types/Reducer';
+import { isDraftable, produce } from 'immer';
 
 
 const transform = (collection: Collection<Reducer>) => {
@@ -10,10 +11,11 @@ const transform = (collection: Collection<Reducer>) => {
 };
 
 /**
- * Applies a reducer to the reducible during the component lifecycle.
+ * Runs the reducers of a reducible and returns the result.
+ * 
  * **WARNING**: Value and params must be memoized using React.useMemo 
- * or a state to avoid unnecessary re-renders. Prefer primitive values 
- * or known immutable objects.
+ * or a state to avoid unnecessary re-renders or prefer primitive values 
+ * or known immutable objects to avoid memoization.
  * 
  * Returns the result of the reducer.
  */
@@ -27,6 +29,13 @@ export default function useApplyReducers(
     const reducers = useCollection(reducible.getReducer(name), transform);
 
     const result = React.useMemo(() => {
+        if (isDraftable(value)) {
+            return produce(value, (draft) => {
+                return reducers.reduce((acc, reducer) => {
+                    return reducer(acc, ...params);
+                }, draft);
+            });
+        }
         return reducers.reduce((acc, reducer) => {
             return reducer(acc, ...params);
         }, value);

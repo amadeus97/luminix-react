@@ -1,5 +1,5 @@
 import { Model, config, log, model } from '@luminix/core';
-import { ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+import { ModelGetOptions, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
 import React from 'react';
 
 type ModelGetState = Partial<ModelPaginatedResponse> & {
@@ -7,30 +7,23 @@ type ModelGetState = Partial<ModelPaginatedResponse> & {
     error: Error | null;
 };
 
-type ModelGetQuery = Record<string, unknown> & {
-    q?: string;
-    page?: number;
-    per_page?: number;
-    order_by?: string;
-    filters?: Record<string, unknown>;
-    tab?: string;
-    minified?: boolean;
-}
 
 /**
  * Hook to fetch list of models.
- * **WARNING** The request will be made on mount and on every change of the query.
- * If `query` should be a constant, declare it outside the component.
- * If `query` should be mutable, use `React.useMemo` or pass a state value as `query`.
+ * **WARNING** The request will be made on mount and on every change of the options.
+ * If `options` should be a constant, declare it outside the component.
+ * If `options` should be mutable, use `React.useMemo` or pass a state value as `options`.
  * 
  * Usage:
  * ```tsx
  * import { useModelGet } from '@luminix/react';
  * 
- * const MODEL_GET_QUERY = {
- *     page: 1,
- *     per_page: 30,
- *     q: 'search query',
+ * const MODEL_GET_OPTIONS = {
+ *     query: {
+ *         page: 1,
+ *         per_page: 30,
+ *         q: 'search query',
+ *     }
  * };
  * 
  * const Component = () => {
@@ -44,8 +37,8 @@ type ModelGetQuery = Record<string, unknown> & {
  * };
  * ```
  */
-export default function useModelGet(abstract: string | typeof Model, query?: ModelGetQuery) {
-    
+export default function useModelGet(abstract: string | typeof Model, options: ModelGetOptions = {}) {
+
     const LeModel = React.useMemo(() => typeof abstract === 'string' 
         ? model(abstract) 
         : abstract, [abstract]);
@@ -57,7 +50,7 @@ export default function useModelGet(abstract: string | typeof Model, query?: Mod
 
     const refresh = React.useCallback(() => {
         setState({ loading: true, error: null });
-        LeModel.get(query)
+        LeModel.get(options)
             .then((response) => {
                 console.log(response);
                 setState({
@@ -72,7 +65,7 @@ export default function useModelGet(abstract: string | typeof Model, query?: Mod
                 }
                 setState({ loading: false, error: e });
             });
-    }, [LeModel, query]);
+    }, [LeModel, options]);
 
     React.useEffect(refresh, [refresh]);
 

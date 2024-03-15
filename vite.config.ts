@@ -21,6 +21,7 @@ export default defineConfig({
       external: [
         '@luminix/core',
         'axios',
+        'immer',
         'lodash',
         'react',
         'react-dom',

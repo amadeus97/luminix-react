@@ -1,11 +1,17 @@
 import { Model } from '@luminix/core';
 import useModelGet from './useModelGet';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import React from 'react';
+import { JsonObject } from '@luminix/core/dist/types/Model';
 
-const REFLECT_SEARCH_PARAMS = ['page', 'per_page', 'q', 'order_by', 'filters', 'tab'];
+const DEFAULT_REFLECT_SEARCH_PARAMS = ['page', 'per_page', 'q', 'order_by', 'filters', 'tab'];
 
-const DEFAULT_ADDED_SEARCH_PARAMS: string[] = []
+const DEFAULT_INJECT_QUERY = {};
+
+type UseBrowsableModelGetOptions = {
+    injectQuery?: JsonObject;
+    reflectSearchParams?: string[];
+}
 
 /**
  * Extends `useModelGet` to reflect the current browser search params in the request.
@@ -29,21 +35,37 @@ const DEFAULT_ADDED_SEARCH_PARAMS: string[] = []
  *    const { response, error, loading, refresh } = useBrowsableModelGet('user', ADDED_SEARCH_PARAMS);
  * };
  */
-export default function useBrowsableModelGet(abstract: string | typeof Model, addedSearchParams = DEFAULT_ADDED_SEARCH_PARAMS) {
+export default function useBrowsableModelGet(abstract: string | typeof Model, options: UseBrowsableModelGetOptions = {}) {
+
+    const {
+        reflectSearchParams = DEFAULT_REFLECT_SEARCH_PARAMS,
+        injectQuery = DEFAULT_INJECT_QUERY,
+    } = options;
 
     const [searchParams] = useSearchParams();
 
-    const query = React.useMemo(() => {
+    const location = useLocation();
+
+    const useModelGetOptions = React.useMemo(() => {
         const obj = Object.fromEntries(searchParams);
-        return Object.entries(obj).reduce((acc, [key, value]) => {
-            if (REFLECT_SEARCH_PARAMS.includes(key) || addedSearchParams.includes(key)) {
+        const query = Object.entries(obj).reduce((acc, [key, value]) => {
+            if (reflectSearchParams.includes(key)) {
                 acc[key] = value;
             }
             return acc;
-        }, {} as Record<string, unknown>);
-    }, [addedSearchParams, searchParams]);
+        }, {} as JsonObject);
 
-    return useModelGet(abstract, query);
+        return {
+            query: {
+                ...query,
+                ...injectQuery,
+            },
+            linkBase: `${location.pathname}?${searchParams.toString()}`,
+        };
+    }, [reflectSearchParams, searchParams, injectQuery, location.pathname]);
+
+    return useModelGet(abstract, useModelGetOptions);
+
     
 }
 

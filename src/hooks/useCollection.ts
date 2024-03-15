@@ -46,17 +46,17 @@ import { Collection } from '@luminix/core/dist/contracts/Collection';
 export default function useCollection<T>(collection: Collection<T>): Collection<T>;
 export default function useCollection<T, V>(
     collection: Collection<T>,
-    transform: (collection: Collection<T>) => Collection<V>
-): Collection<V>;
+    transform: (collection: Collection<T>) => V
+): V;
 export default function useCollection<T = unknown, V = T>(
     collection: Collection<T>,
-    transform?: (collection: Collection<T>) => Collection<V>
+    transform?: (collection: Collection<T>) => V
 ) {
 
-    const [state, setState] = React.useState<Collection<T|V>>(
+    const [state, setState] = React.useState<Collection<T>|V>(
         transform 
-            ? transform(collection.copy() as Collection<T>) 
-            : collection.copy() as Collection<T>
+            ? transform(collection.copy()) 
+            : collection.copy()
     );
 
     const isMountingRef = React.useRef(false);
@@ -70,18 +70,18 @@ export default function useCollection<T = unknown, V = T>(
         if (!isMountingRef.current) {
             setState(
                 transform 
-                    ? transform(collection.copy() as Collection<T>)
-                    : collection.copy() as Collection<T>
+                    ? transform(collection.copy())
+                    : collection.copy()
             );
         } else {
             isMountingRef.current = false;
         }
 
-        return collection.on('change', ({ source }) => {
+        return collection.on('change', () => {
             setState(() => {
                 return transform 
-                    ? transform(source.copy() as Collection<T>)
-                    : source.copy() as Collection<T>;
+                    ? transform(collection.copy())
+                    : collection.copy();
             });
         });
     }, [collection, transform]);

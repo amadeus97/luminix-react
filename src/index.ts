@@ -6,6 +6,7 @@ import useApplyReducers from './hooks/useApplyReducers';
 import useAttributes from './hooks/useAttributes';
 import useBrowsableApiRequest from './hooks/useBrowsableApiRequest';
 import useBrowsableModelGet from './hooks/useBrowsableModelGet';
+import useCollection from './hooks/useCollection';
 import useErrors from './hooks/useErrors';
 import useModelFind from './hooks/useModelFind';
 import useModelGet from './hooks/useModelGet';
@@ -18,6 +19,7 @@ export {
     useAttributes,
     useBrowsableApiRequest,
     useBrowsableModelGet,
+    useCollection,
     useErrors,
     useModelFind,
     useModelGet,
