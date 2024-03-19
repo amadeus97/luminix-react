@@ -1,7 +1,8 @@
 import React from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 import { RouteGenerator } from '@luminix/core/dist/types/Route';
-import { app, config, isValidationError, log, route } from '@luminix/core';
+import { app, isValidationError, log, route } from '@luminix/core';
+import useConfig from './useConfig';
 
 type ApiRequestState<T> = {
     response: T | null;
@@ -56,6 +57,8 @@ const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
         error: null,
         loading: false,
     });
+
+    const debugMode = useConfig('app.debug', false);
     
     const refresh = React.useCallback(() => {
 
@@ -84,7 +87,7 @@ const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
 
                 setState({ response: response.data, error: null, loading: false });
             } catch (error: unknown) {
-                if (config('app.debug')) {
+                if (debugMode) {
                     log().error(error);
                 }
 
@@ -120,7 +123,7 @@ const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
             }
         })();
 
-    }, [options]);
+    }, [options, debugMode]);
 
     React.useEffect(refresh, [refresh]);
 

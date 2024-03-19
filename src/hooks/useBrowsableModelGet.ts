@@ -1,7 +1,7 @@
-import { Model } from '@luminix/core';
+import React from 'react';
+
 import useModelGet from './useModelGet';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import React from 'react';
 import { JsonObject } from '@luminix/core/dist/types/Model';
 
 const DEFAULT_REFLECT_SEARCH_PARAMS = ['page', 'per_page', 'q', 'order_by', 'filters', 'tab'];
@@ -16,15 +16,18 @@ type UseBrowsableModelGetOptions = {
 /**
  * Extends `useModelGet` to reflect the current browser search params in the request.
  * **WARNING** The request will be made on mount, when the abstract changes, when
- * the searchParams is changed and when the addedSearchParams is changed.
- * If `addedSearchParams` should be a constant, declare it outside the component.
- * If `addedSearchParams` should be mutable, use `React.useMemo` or pass a state value as `addedSearchParams`.
+ * the searchParams is changed and when the options is changed.
+ * If `options` should be a constant, declare it outside the component.
+ * If `options` should be mutable, use `React.useMemo` or pass a state value as `options`.
  * 
  * The `abstract` can be a string or a `Model` class, which is a known immutable reference,
  * so it's safe to use it as a dependency.
  * 
- * The `addedSearchParams` is a list of search params to reflect in the request, in addition
- * to the default search params: `page`, `per_page`, `q`, `order_by`, `filters` and `tab`.
+ * The `options` has two properties:
+ * - `injectQuery` is an object that will be merged with the current query.
+ * - `reflectSearchParams` is an array of keys that will be reflected from the current
+ * browser search params in the request. By default will reflect the necessary parameters
+ * for the `luminix/backend` API.
  * 
  * ```tsx
  * import { useBrowsableModelGet } from '@luminix/react';
@@ -35,7 +38,7 @@ type UseBrowsableModelGetOptions = {
  *    const { response, error, loading, refresh } = useBrowsableModelGet('user', ADDED_SEARCH_PARAMS);
  * };
  */
-export default function useBrowsableModelGet(abstract: string | typeof Model, options: UseBrowsableModelGetOptions = {}) {
+export default function useBrowsableModelGet(abstract: string, options: UseBrowsableModelGetOptions = {}) {
 
     const {
         reflectSearchParams = DEFAULT_REFLECT_SEARCH_PARAMS,
@@ -46,7 +49,7 @@ export default function useBrowsableModelGet(abstract: string | typeof Model, op
 
     const location = useLocation();
 
-    const useModelGetOptions = React.useMemo(() => {
+    const modelGetOptions = React.useMemo(() => {
         const obj = Object.fromEntries(searchParams);
         const query = Object.entries(obj).reduce((acc, [key, value]) => {
             if (reflectSearchParams.includes(key)) {
@@ -64,7 +67,7 @@ export default function useBrowsableModelGet(abstract: string | typeof Model, op
         };
     }, [reflectSearchParams, searchParams, injectQuery, location.pathname]);
 
-    return useModelGet(abstract, useModelGetOptions);
+    return useModelGet(abstract, modelGetOptions);
 
     
 }

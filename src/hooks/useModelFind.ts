@@ -1,5 +1,6 @@
 import React from "react";
-import { Model, config, log, model } from "@luminix/core";
+import { Model, config, log } from "@luminix/core";
+import useModel from "./useModel";
 
 type ModelFindState = {
     item: Model | null;
@@ -19,10 +20,9 @@ type ModelFindState = {
  * } = useModelFind('user', 1);
  * ```
  */
-export default function useModelFind(abstract: string | typeof Model, id: string | number) {
-    const LeModel = React.useMemo(() => typeof abstract === 'string' 
-        ? model(abstract) 
-        : abstract, [abstract]);
+export default function useModelFind(abstract: string, id: string | number) {
+
+    const Model = useModel(abstract);
 
     const [state, setState] = React.useState<ModelFindState>({
         item: null,
@@ -32,7 +32,7 @@ export default function useModelFind(abstract: string | typeof Model, id: string
 
     const refresh = React.useCallback(() => {
         setState({ loading: true, error: null, item: null });
-        LeModel.find(id)
+        Model.find(id)
             .then((i) => {
                 setState({ item: i, loading: false, error: null });
             })
@@ -42,7 +42,7 @@ export default function useModelFind(abstract: string | typeof Model, id: string
                 }
                 setState({ item: null, loading: false, error: e });
             });
-    }, [id, LeModel]);
+    }, [id, Model]);
 
     React.useEffect(refresh, [refresh]);
 

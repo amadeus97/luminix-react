@@ -1,6 +1,8 @@
-import { Model, config, log, model } from '@luminix/core';
-import { ModelGetOptions, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
 import React from 'react';
+import { log } from '@luminix/core';
+import { ModelGetOptions, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+import useModel from './useModel';
+import useConfig from './useConfig';
 
 type ModelGetState = Partial<ModelPaginatedResponse> & {
     loading: boolean;
@@ -37,11 +39,10 @@ type ModelGetState = Partial<ModelPaginatedResponse> & {
  * };
  * ```
  */
-export default function useModelGet(abstract: string | typeof Model, options: ModelGetOptions = {}) {
+export default function useModelGet(abstract: string, options: ModelGetOptions = {}) {
 
-    const LeModel = React.useMemo(() => typeof abstract === 'string' 
-        ? model(abstract) 
-        : abstract, [abstract]);
+    const Model = useModel(abstract);
+    const debugMode = useConfig('app.debug', false);
 
     const [state, setState] = React.useState<ModelGetState>({
         loading: true,
@@ -50,9 +51,8 @@ export default function useModelGet(abstract: string | typeof Model, options: Mo
 
     const refresh = React.useCallback(() => {
         setState({ loading: true, error: null });
-        LeModel.get(options)
+        Model.get(options)
             .then((response) => {
-                console.log(response);
                 setState({
                     loading: false, 
                     error: null,
@@ -60,12 +60,12 @@ export default function useModelGet(abstract: string | typeof Model, options: Mo
                 });
             })
             .catch((e) => {
-                if (config('app.debug')) {
+                if (debugMode) {
                     log().error(e);
                 }
                 setState({ loading: false, error: e });
             });
-    }, [LeModel, options]);
+    }, [Model, options, debugMode]);
 
     React.useEffect(refresh, [refresh]);
 
