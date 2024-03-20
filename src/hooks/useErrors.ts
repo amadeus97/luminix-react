@@ -1,6 +1,6 @@
 import React from 'react';
 import { error } from '@luminix/core';
-import { LuminixContext } from '../providers/LuminixProvider';
+import { LuminixContext } from '../components/LuminixProvider';
 
 /**
  * Listen to the error store and return an object with the errors.

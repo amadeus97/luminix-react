@@ -1,10 +1,9 @@
-import LuminixProvider from './providers/LuminixProvider';
+import LuminixProvider from './components/LuminixProvider';
 
 import useAddReducer from './hooks/useAddReducer';
 import useApiRequest from './hooks/useApiRequest';
 import useApplyReducers from './hooks/useApplyReducers';
 import useAttributes from './hooks/useAttributes';
-import useBooted from './hooks/useBooted';
 import useBrowsableApiRequest from './hooks/useBrowsableApiRequest';
 import useBrowsableModelGet from './hooks/useBrowsableModelGet';
 import useCollection from './hooks/useCollection';
@@ -20,7 +19,6 @@ export {
     useApiRequest,
     useApplyReducers,
     useAttributes,
-    useBooted,
     useBrowsableApiRequest,
     useBrowsableModelGet,
     useConfig,

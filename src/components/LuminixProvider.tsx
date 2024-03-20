@@ -6,13 +6,20 @@ import { AppFacade, InitEvent } from '@luminix/core/dist/types/App';
 import { AppConfiguration } from '@luminix/core/dist/types/Config';
 import { Event } from '@luminix/core/dist/types/Event';
 
+import Fallback from './Fallback';
 
-export type LuminixProviderProps = {
+import { RouteObject, RouterProvider, RouterProviderProps, createBrowserRouter } from 'react-router-dom';
+import { Router } from '@remix-run/router';
+
+
+export type LuminixProviderProps = Omit<RouterProviderProps, "router"> & {
+    routes: () => RouteObject[],
     config?: AppConfiguration,
     onInit?: (e: InitEvent) => void,
     onBooting?: (e: Event<AppFacade>) => void,
     onBooted?: (e: Event<AppFacade>) => void,
     plugins?: Plugin[],
+    fallbackElement?: React.ReactElement,
 };
 
 
@@ -24,6 +31,7 @@ export type LuminixContextState = {
     config: AppConfiguration,
     errors: Record<string, string>,
     models: Record<string, typeof Model>,
+    router: Router | null,
 
 };
 
@@ -35,14 +43,17 @@ const INITIAL_STATE: LuminixContextState = {
     config: {},
     errors: {},
     models: {},
+    router: null,
 };
 
 
 export const LuminixContext = React.createContext<LuminixContextState>(INITIAL_STATE);
 
 const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
-    children, config = {}, plugins = [],
-    onInit, onBooting, onBooted, 
+    routes, config = {}, plugins = [],
+    onInit, onBooting, onBooted,
+    fallbackElement = <Fallback />,
+    ...props
 }) => {
 
     const [state, setState] = React.useState<LuminixContextState>(INITIAL_STATE);
@@ -83,6 +94,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
                 config: configFacade.all(),
                 errors: error.all(),
                 models: repository.make(),
+                router: createBrowserRouter(routes())
             });
 
             if (onBooted) {
@@ -129,7 +141,15 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
 
     return (
         <LuminixContext.Provider value={state}>
-            {children}
+            {state.router
+                ? (
+                    <RouterProvider
+                        router={state.router}
+                        fallbackElement={fallbackElement}
+                        {...props}
+                    />
+                )
+                : fallbackElement}
         </LuminixContext.Provider>
     );
 };

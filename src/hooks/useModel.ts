@@ -1,6 +1,6 @@
 import React from 'react';
 import { Model } from '@luminix/core';
-import { LuminixContext } from '../providers/LuminixProvider';
+import { LuminixContext } from '../components/LuminixProvider';
 
 
 function useModel(abstract: string): typeof Model

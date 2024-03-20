@@ -19,6 +19,7 @@
     "main": "dist/react.js",
     "types": "dist/index.d.ts",
     "devDependencies": {
+        "@remix-run/router": "^1.15.3",
         "@types/lodash": "^4.14.202",
         "@types/react": "^17",
         "@types/react-dom": "^17",
@@ -31,5 +32,8 @@
         "typescript": "^5.2.2",
         "vite": "^5.1.4",
         "vite-plugin-dts": "^3.7.3"
+    },
+    "dependencies": {
+        "react-spinners": "^0.13.8"
     }
 }

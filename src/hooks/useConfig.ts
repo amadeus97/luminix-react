@@ -1,5 +1,5 @@
 import React from "react";
-import { LuminixContext } from "../providers/LuminixProvider";
+import { LuminixContext } from "../components/LuminixProvider";
 import _ from "lodash";
 
 
