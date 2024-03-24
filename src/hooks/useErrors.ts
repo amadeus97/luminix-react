@@ -1,30 +1,26 @@
 import React from 'react';
+
 import { error } from '@luminix/core';
-import { LuminixContext } from '../components/LuminixProvider';
+import _ from 'lodash';
 
-/**
- * Listen to the error store and return an object with the errors.
- * Returns an object with camelCased keys, suffixed with 'Error'.
- * Will clear the errors when the component unmounts.
- * 
- * ```tsx
- * import { error } from '@luminix/core';
- * import { useErrors } from '@luminix/react';
- * 
- * const {
- *   nameError, emailError, passwordError
- * } = useErrors();
- * 
- * // ...
- * 
- * error().add('name', 'Name is required'); // nameError === 'Name is required'
- * ```
- */
-export default function useErrors(): Record<string, string|undefined> {
-    const { errors } = React.useContext(LuminixContext);
 
-    // Clear errors on unmount
-    React.useEffect(() => () => error().clear(), []);
+export default function useErrors(bag = 'default'): Record<string, string> {
+    const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+    React.useEffect(() => {
+        const off = error().bag(bag).on('change', ({ source }) => {
+            setErrors(
+                Object.entries(source.all() as Record<string, string>).reduce((acc: Record<string, string>, [key, value]) => {
+                    acc[_.camelCase(key + 'Error')] = value;
+                    return acc;
+                }, {})
+            );
+        });
+        return () => {
+            off();
+            error().clear(bag);
+        };
+    }, [bag]);
 
     return errors;
 }

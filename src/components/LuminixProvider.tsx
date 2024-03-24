@@ -1,6 +1,5 @@
 import React from 'react';
 
-import _ from 'lodash';
 import { Model, Plugin, app } from '@luminix/core';
 import { AppFacade, InitEvent } from '@luminix/core/dist/types/App';
 import { AppConfiguration } from '@luminix/core/dist/types/Config';
@@ -29,7 +28,6 @@ export type LuminixContextState = {
     },
     booted: boolean,
     config: AppConfiguration,
-    errors: Record<string, string>,
     models: Record<string, typeof Model>,
     router: Router | null,
 
@@ -41,7 +39,6 @@ const INITIAL_STATE: LuminixContextState = {
     },
     booted: false,
     config: {},
-    errors: {},
     models: {},
     router: null,
 };
@@ -85,15 +82,14 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
         });
 
         app().on('booted', (e) => {
-            const { auth, config: configFacade, error, repository } = app().make();
+            const { auth, config: configFacade, model } = app().make();
             setState({
                 auth: {
                     user: auth.user(),
                 },
                 booted: true,
                 config: configFacade.all(),
-                errors: error.all(),
-                models: repository.make(),
+                models: model.make(),
                 router: createBrowserRouter(routes())
             });
 
@@ -109,7 +105,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
 
     React.useEffect(() => {
         if (state.booted) {
-            const unsubConfig = app('config').on('change', (e) => {
+            const unsubscribe = app('config').on('change', (e) => {
                 setState((state) => {
                     return {
                         ...state,
@@ -118,23 +114,8 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
                 });
             });
 
-            const unsubError = app('error').on('change', (e) => {
-                setState((state) => {
-                    return {
-                        ...state,
-                        errors: Object.entries(e.source.all()).reduce((acc, [key, value]) => {
-                            return {
-                                ...acc,
-                                [`${_.camelCase(key)}Error`]: value
-                            };
-                        }, {}),
-                    };
-                });
-            });
-
             return () => {
-                unsubConfig();
-                unsubError();
+                unsubscribe();
             };
         }
     }, [state.booted]);
