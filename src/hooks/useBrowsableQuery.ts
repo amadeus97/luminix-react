@@ -36,10 +36,8 @@ export default function useBrowsableQuery(query: BuilderInterface) {
             } else if (key === 'minified' && value) {
                 query.minified();
             }
-            
-        }
 
-        console.log(query);
+        }
 
         return () => {
             
