@@ -1,9 +1,11 @@
 import React from 'react';
 
 import { BuilderInterface } from '@luminix/core/dist/types/Builder';
-import { ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+import { Model } from '@luminix/core/dist/types/Model';
+import { Collection } from '@luminix/core/dist/contracts/Collection';
 
-type UseQueryState = Partial<ModelPaginatedResponse> & {
+type UseQueryAllState = {
+    data: Collection<Model> | null;
     loading: boolean;
     error: Error | null;
 };
@@ -14,25 +16,31 @@ type UseQueryState = Partial<ModelPaginatedResponse> & {
  */
 export default function useQueryAll(query: BuilderInterface) {
 
-    const [state, setState] = React.useState<UseQueryState>({
+    const [state, setState] = React.useState<UseQueryAllState>({
+        data: null,
         loading: true,
         error: null,
     });
 
     const refresh = React.useCallback(() => {
-        setState({ loading: true, error: null });
+        setState((data) => ({
+            ...data,
+            loading: true,
+            error: null,
+        }));
         query.all()
             .then((response) => {
                 setState({
                     loading: false, 
                     error: null,
-                    ...response,
+                    data: response,
                 });
             })
             .catch((error) => {
                 setState({
                     loading: false,
                     error,
+                    data: null,
                 });
             });
     }, [query]);

@@ -16,14 +16,14 @@ export default function useBrowsableQuery(query: BuilderInterface) {
     
     React.useEffect(() => {        
         // check if key matches pattern filters[*]
-        const extractContent = (str: string) => {
+        const extractFilter = (str: string) => {
             const matches = str.match(/^filters\[(.*)\]$/);
             return matches ? matches[1] : null;
         };
 
         for (const [key, value] of searchParams.entries()) {
 
-            const content = extractContent(key);
+            const content = extractFilter(key);
         
             if (content) {
                 query.where(content, value as string);
@@ -43,10 +43,10 @@ export default function useBrowsableQuery(query: BuilderInterface) {
         return () => {
             
             for (const key of searchParams.keys()) {
-                const content = extractContent(key);
+                const content = extractFilter(key);
                 if (content) {
                     query.unset(`filters.${content}`)
-                } else if (['order_by', 'q', 'minified'].includes(key)) {
+                } else if (['order_by', 'q', 'minified', 'per_page'].includes(key)) {
                     query.unset(key);
                 }
             }
