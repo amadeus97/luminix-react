@@ -13,7 +13,6 @@ export default function useBrowsableQuery(query: BuilderInterface) {
     const location = useLocation();
 
     const page = searchParams.has('page') ? Number(searchParams.get('page')) : 1;
-    const perPage = searchParams.has('per_page') ? Number(searchParams.get('per_page')) : 15;
     
     React.useEffect(() => {        
         // check if key matches pattern filters[*]
@@ -35,6 +34,8 @@ export default function useBrowsableQuery(query: BuilderInterface) {
                 query.searchBy(value);
             } else if (key === 'minified' && value) {
                 query.minified();
+            } else if (key === 'per_page') {
+                query.limit(Number(value));
             }
 
         }
@@ -56,7 +57,7 @@ export default function useBrowsableQuery(query: BuilderInterface) {
         return `${location.pathname}?${searchParams.toString()}`;
     }, [location.pathname, searchParams]);
 
-    return useQuery(query, page, perPage, replaceLinksWith);
+    return useQuery(query, page, replaceLinksWith);
 
 }
 

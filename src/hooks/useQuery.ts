@@ -12,7 +12,7 @@ type UseQueryState = Partial<ModelPaginatedResponse> & {
  * Hook to fetch list of models.
  * 
  */
-export default function useQuery(query: BuilderInterface, page = 1, perPage = 15, replaceLinksWith?: string) {
+export default function useQuery(query: BuilderInterface, page = 1, replaceLinksWith?: string) {
 
     const [state, setState] = React.useState<UseQueryState>({
         loading: true,
@@ -21,7 +21,7 @@ export default function useQuery(query: BuilderInterface, page = 1, perPage = 15
 
     const refresh = React.useCallback(() => {
         setState({ loading: true, error: null });
-        query.get(page, perPage, replaceLinksWith)
+        query.get(page, replaceLinksWith)
             .then((response) => {
                 setState({
                     loading: false, 
@@ -35,7 +35,7 @@ export default function useQuery(query: BuilderInterface, page = 1, perPage = 15
                     error,
                 });
             });
-    }, [query, page, perPage, replaceLinksWith]);
+    }, [query, page, replaceLinksWith]);
 
     React.useEffect(() => {
         refresh();
