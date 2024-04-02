@@ -20,7 +20,7 @@ function useModel(abstract: string | string[]): typeof Model | (typeof Model)[] 
         if (!(abstract in models)) {
             throw new Error(`Model ${abstract} not found in the LuminixProvider.`);
         }
-    
+
         return models[abstract];
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, Array.isArray(abstract) ? [models, ...abstract] : [models, abstract]);
