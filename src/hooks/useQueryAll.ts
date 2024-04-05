@@ -1,14 +1,16 @@
 import React from 'react';
 
-import { BuilderInterface } from '@luminix/core/dist/types/Builder';
-import { Model } from '@luminix/core/dist/types/Model';
-import { Collection } from '@luminix/core/dist/contracts/Collection';
+import { BuilderInterface as Builder } from '@luminix/core/dist/types/Builder';
+import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+import { Collection } from '@luminix/core/dist/types/Collection';
 
 type UseQueryAllState = {
     data: Collection<Model> | null;
     loading: boolean;
     error: Error | null;
 };
+
+type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
 
 /**
  * Hook to fetch list of models.

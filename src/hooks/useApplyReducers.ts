@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReducibleInterface } from '@luminix/core';
 import useCollection from './useCollection';
-import { Collection } from '@luminix/core/dist/contracts/Collection';
+import { Collection } from '@luminix/core/dist/types/Collection';
 import { Reducer } from '@luminix/core/dist/types/Reducer';
 import { isDraftable, produce } from 'immer';
 

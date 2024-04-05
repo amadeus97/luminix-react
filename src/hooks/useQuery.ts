@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { BuilderInterface } from '@luminix/core/dist/types/Builder';
-import { ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+import { BuilderInterface as Builder } from '@luminix/core/dist/types/Builder';
+import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+
+type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
 
 type UseQueryState = Partial<ModelPaginatedResponse> & {
     loading: boolean;

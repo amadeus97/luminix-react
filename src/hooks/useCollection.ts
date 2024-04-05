@@ -1,5 +1,5 @@
 import React from 'react';
-import { Collection } from '@luminix/core/dist/contracts/Collection';
+import { Collection } from '@luminix/core/dist/types/Collection';
 
 /**
  * Hook to listen to the change event of a collection and update the state accordingly.
@@ -55,8 +55,8 @@ export default function useCollection<T = unknown, V = T>(
 
     const [state, setState] = React.useState<Collection<T>|V>(
         transform 
-            ? transform(collection.copy()) 
-            : collection.copy()
+            ? transform(collection.collect()) 
+            : collection.collect()
     );
 
     const isMountingRef = React.useRef(false);
@@ -70,8 +70,8 @@ export default function useCollection<T = unknown, V = T>(
         if (!isMountingRef.current) {
             setState(
                 transform 
-                    ? transform(collection.copy())
-                    : collection.copy()
+                    ? transform(collection.collect())
+                    : collection.collect()
             );
         } else {
             isMountingRef.current = false;
@@ -80,8 +80,8 @@ export default function useCollection<T = unknown, V = T>(
         return collection.on('change', () => {
             setState(() => {
                 return transform 
-                    ? transform(collection.copy())
-                    : collection.copy();
+                    ? transform(collection.collect())
+                    : collection.collect();
             });
         });
     }, [collection, transform]);

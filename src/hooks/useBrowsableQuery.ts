@@ -1,9 +1,13 @@
 import React from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-import { BuilderInterface } from '@luminix/core/dist/types/Builder';
+import { BuilderInterface as Builder } from '@luminix/core/dist/types/Builder';
 
 import useQuery from './useQuery';
+
+import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+
+type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
 
 
 export default function useBrowsableQuery(query: BuilderInterface) {
