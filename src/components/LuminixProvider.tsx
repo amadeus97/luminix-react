@@ -12,7 +12,7 @@ import { Router } from '@remix-run/router';
 
 
 export type LuminixProviderProps = Omit<RouterProviderProps, "router"> & {
-    routes: () => RouteObject[],
+    routes: (app: AppFacade) => RouteObject[],
     config?: AppConfiguration,
     onInit?: (e: InitEvent) => void,
     onBooting?: (e: Event<AppFacade>) => void,
@@ -82,7 +82,16 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
         });
 
         app().on('booted', (e) => {
-            const { auth, config: configFacade, model } = app().make();
+            const {
+                auth, config: configFacade, model, route
+            } = app().make();
+
+            if (typeof route.routerOptions !== 'function') {
+                throw new Error('Expect RouteFacade to be Reducible');
+            }
+
+            const options = route.routerOptions({});
+
             setState({
                 auth: {
                     user: auth.user(),
@@ -90,7 +99,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
                 booted: true,
                 config: configFacade.all(),
                 models: model.make(),
-                router: createBrowserRouter(routes())
+                router: createBrowserRouter(routes(e.source), options)
             });
 
             if (onBooted) {
