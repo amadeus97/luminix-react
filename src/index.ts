@@ -1,4 +1,5 @@
 import LuminixProvider from './components/LuminixProvider';
+import Fallback from './components/Fallback';
 
 import useAddReducer from './hooks/useAddReducer';
 import useApiRequest from './hooks/useApiRequest';
@@ -32,4 +33,5 @@ export {
     useOn,
 
     LuminixProvider,
+    Fallback,
 };
