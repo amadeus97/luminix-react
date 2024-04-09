@@ -61,7 +61,7 @@ export default function useBrowsableQuery(query: BuilderInterface) {
         return `${location.pathname}?${searchParams.toString()}`;
     }, [location.pathname, searchParams]);
 
-    return useQuery(query, page, replaceLinksWith);
+    return useQuery(query, page, { replaceLinksWith, throttle: 800 });
 
 }
 

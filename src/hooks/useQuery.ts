@@ -2,6 +2,8 @@ import React from 'react';
 
 import { BuilderInterface as Builder } from '@luminix/core/dist/types/Builder';
 import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+import { log } from '@luminix/core';
+import _ from 'lodash';
 
 type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
 
@@ -10,18 +12,28 @@ type UseQueryState = Partial<ModelPaginatedResponse> & {
     error: Error | null;
 };
 
+export type UseQueryOptions = {
+    replaceLinksWith?: string;
+    throttle?: number;
+};
+
 /**
+ * 
  * Hook to fetch list of models.
  * 
  */
-export default function useQuery(query: BuilderInterface, page = 1, replaceLinksWith?: string) {
+export default function useQuery(query: BuilderInterface, page = 1, options: UseQueryOptions = {}) {
+
+    const {
+        replaceLinksWith, throttle = 0,
+    } = options;
 
     const [state, setState] = React.useState<UseQueryState>({
         loading: true,
         error: null,
     });
 
-    const refresh = React.useCallback(() => {
+    const refresh = (query: BuilderInterface, page: number, replaceLinksWith?: string) => {
         setState({ loading: true, error: null });
         query.get(page, replaceLinksWith)
             .then((response) => {
@@ -36,16 +48,21 @@ export default function useQuery(query: BuilderInterface, page = 1, replaceLinks
                     loading: false,
                     error,
                 });
+                log().error(error);
             });
-    }, [query, page, replaceLinksWith]);
+    };
+
+    const refreshRef = React.useRef(_.throttle(refresh, throttle));
 
     React.useEffect(() => {
-        refresh();
-    }, [refresh]);
+        // refreshRef.current = _.throttle(refresh, throttle);
+        refreshRef.current(query, page, replaceLinksWith);
+        // _.throttle(refresh, throttle)();
+    }, [query, page, replaceLinksWith]);
 
     return {
         ...state,
-        refresh,
+        refresh: () => refresh(query, page, replaceLinksWith),
     };
 }
 
