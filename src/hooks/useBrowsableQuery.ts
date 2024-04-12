@@ -12,7 +12,7 @@ type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
 
 export default function useBrowsableQuery(query: BuilderInterface) {
 
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const location = useLocation();
 
@@ -30,9 +30,9 @@ export default function useBrowsableQuery(query: BuilderInterface) {
             const content = extractFilter(key);
         
             if (content) {
-                query.where(content, value as string);
+                query.where(content, value);
             } else if (key === 'order_by') {
-                const [column, direction] = (value as string).split(':');
+                const [column, direction] = value.split(':');
                 query.orderBy(column, direction as 'asc' | 'desc');
             } else if (key === 'q') {
                 query.searchBy(value);
@@ -61,7 +61,22 @@ export default function useBrowsableQuery(query: BuilderInterface) {
         return `${location.pathname}?${searchParams.toString()}`;
     }, [location.pathname, searchParams]);
 
-    return useQuery(query, page, { replaceLinksWith, throttle: 800 });
+    const queryResults = useQuery(query, page, { replaceLinksWith, throttle: 400 });
+
+    const {
+        meta: { current_page: currentPage, last_page: lastPage } = {},
+    } = queryResults;
+
+    React.useEffect(() => {
+        if (currentPage && lastPage && currentPage > lastPage) {
+            setSearchParams((params) => {
+                params.set('page', lastPage.toString());
+                return params;
+            }, { replace: true });
+        }
+    }, [currentPage, lastPage, setSearchParams]);
+
+    return queryResults;
 
 }
 

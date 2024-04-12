@@ -55,9 +55,7 @@ export default function useQuery(query: BuilderInterface, page = 1, options: Use
     const refreshRef = React.useRef(_.throttle(refresh, throttle));
 
     React.useEffect(() => {
-        // refreshRef.current = _.throttle(refresh, throttle);
         refreshRef.current(query, page, replaceLinksWith);
-        // _.throttle(refresh, throttle)();
     }, [query, page, replaceLinksWith]);
 
     return {
