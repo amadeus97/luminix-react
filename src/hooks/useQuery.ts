@@ -34,7 +34,12 @@ export default function useQuery(query: BuilderInterface, page = 1, options: Use
     });
 
     const refresh = (query: BuilderInterface, page: number, replaceLinksWith?: string) => {
-        setState({ loading: true, error: null });
+        setState(({ meta, links }) => ({
+            loading: true,
+            error: null,
+            meta,
+            links,
+        }));
         query.get(page, replaceLinksWith)
             .then((response) => {
                 setState({
