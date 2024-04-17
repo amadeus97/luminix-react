@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Model, Plugin, app } from '@luminix/core';
+import { Plugin, app } from '@luminix/core';
 import { AppFacade, InitEvent } from '@luminix/core/dist/types/App';
 import { AppConfiguration } from '@luminix/core/dist/types/Config';
 import { Event } from '@luminix/core/dist/types/Event';
@@ -8,7 +8,7 @@ import { Event } from '@luminix/core/dist/types/Event';
 import Fallback from './Fallback';
 
 import { RouteObject, RouterProvider, RouterProviderProps, createBrowserRouter } from 'react-router-dom';
-import { Router } from '@remix-run/router';
+import LuminixContext, { LuminixContextState, luminixInitialState } from '../contexts/LuminixContext';
 
 
 export type LuminixProviderProps = Omit<RouterProviderProps, "router"> & {
@@ -22,30 +22,6 @@ export type LuminixProviderProps = Omit<RouterProviderProps, "router"> & {
 };
 
 
-export type LuminixContextState = {
-    auth: {
-        user: Model | null,
-    },
-    booted: boolean,
-    config: AppConfiguration,
-    models: Record<string, typeof Model>,
-    router: Router | null,
-
-};
-
-const INITIAL_STATE: LuminixContextState = {
-    auth: {
-        user: null,
-    },
-    booted: false,
-    config: {},
-    models: {},
-    router: null,
-};
-
-
-export const LuminixContext = React.createContext<LuminixContextState>(INITIAL_STATE);
-
 const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
     routes, config = {}, plugins = [],
     onInit, onBooting, onBooted,
@@ -53,7 +29,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
     ...props
 }) => {
 
-    const [state, setState] = React.useState<LuminixContextState>(INITIAL_STATE);
+    const [state, setState] = React.useState<LuminixContextState>(luminixInitialState);
 
     React.useEffect(() => {
 
