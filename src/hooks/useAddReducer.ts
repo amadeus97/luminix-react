@@ -8,6 +8,8 @@ import React from 'react';
  * **WARNING**: The reducer must be a memoized function, using React.useCallback
  * to avoid unnecessary re-renders.
  * 
+ * Usage:
+ * 
  * ```tsx
  * import { model } from '@luminix/core';
  * import { useAddReducer } from '@luminix/react';
@@ -34,7 +36,7 @@ export default function useAddReducer(
     priority: number = 10,
 ) {
     React.useEffect(() => {
-        return reducible.reducer(name, reducer, priority)
+        return reducible.reducer(name, reducer, priority);
     }, [reducible, name, reducer, priority]);
 }
 

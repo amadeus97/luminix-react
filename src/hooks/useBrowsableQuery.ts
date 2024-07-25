@@ -10,52 +10,20 @@ import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
 type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
 
 
-export default function useBrowsableQuery(query: BuilderInterface) {
+export default function useBrowsableQuery(queryFactory: () => BuilderInterface) {
 
     const [searchParams, setSearchParams] = useSearchParams();
+    const [query, setQuery] = React.useState<BuilderInterface|null>(null);
 
     const location = useLocation();
 
     const page = searchParams.has('page') ? Number(searchParams.get('page')) : 1;
     
-    React.useEffect(() => {        
-        // check if key matches pattern filters[*]
-        const extractFilter = (str: string) => {
-            const matches = str.match(/^filters\[(.*)\]$/);
-            return matches ? matches[1] : null;
-        };
-
-        for (const [key, value] of searchParams.entries()) {
-
-            const content = extractFilter(key);
-        
-            if (content) {
-                query.where(content, value);
-            } else if (key === 'order_by') {
-                const [column, direction] = value.split(':');
-                query.orderBy(column, direction as 'asc' | 'desc');
-            } else if (key === 'q') {
-                query.searchBy(value);
-            } else if (key === 'minified' && value) {
-                query.minified();
-            } else if (key === 'per_page') {
-                query.limit(Number(value));
-            }
-
-        }
-
-        return () => {
-            
-            for (const key of searchParams.keys()) {
-                const content = extractFilter(key);
-                if (content) {
-                    query.unset(`filters.${content}`)
-                } else if (['order_by', 'q', 'minified', 'per_page'].includes(key)) {
-                    query.unset(key);
-                }
-            }
-        }
-    }, [searchParams, query]);
+    React.useEffect(() => {
+        setQuery(
+            queryFactory().include(searchParams)
+        );
+    }, [searchParams, queryFactory]);
 
     const replaceLinksWith = React.useMemo(() => {
         return `${location.pathname}?${searchParams.toString()}`;
@@ -63,6 +31,7 @@ export default function useBrowsableQuery(query: BuilderInterface) {
 
     const queryResults = useQuery(query, page, { replaceLinksWith });
 
+    // redirect to last page if current page is higher than last page
     const {
         meta: { current_page: currentPage, last_page: lastPage } = {},
     } = queryResults;

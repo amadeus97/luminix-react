@@ -3,7 +3,7 @@ import React from 'react';
 import { BuilderInterface as Builder } from '@luminix/core/dist/types/Builder';
 import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
 import { log } from '@luminix/core';
-import _ from 'lodash';
+//import _ from 'lodash';
 
 type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
 
@@ -14,7 +14,7 @@ type UseQueryState = Partial<ModelPaginatedResponse> & {
 
 export type UseQueryOptions = {
     replaceLinksWith?: string;
-    throttle?: number;
+    //throttle?: number;
 };
 
 /**
@@ -22,10 +22,10 @@ export type UseQueryOptions = {
  * Hook to fetch list of models.
  * 
  */
-export default function useQuery(query: BuilderInterface, page = 1, options: UseQueryOptions = {}) {
+export default function useQuery(query: BuilderInterface|null, page = 1, options: UseQueryOptions = {}) {
 
     const {
-        replaceLinksWith, throttle = 0,
+        replaceLinksWith, //throttle = 0,
     } = options;
 
     const [state, setState] = React.useState<UseQueryState>({
@@ -33,13 +33,19 @@ export default function useQuery(query: BuilderInterface, page = 1, options: Use
         error: null,
     });
 
-    const refresh = (query: BuilderInterface, page: number, replaceLinksWith?: string) => {
+    const refresh = React.useCallback(() => {
+
         setState(({ meta, links }) => ({
             loading: true,
             error: null,
             meta,
             links,
         }));
+
+        if (!query) {
+            return;
+        }
+
         query.get(page, replaceLinksWith)
             .then((response) => {
                 setState({
@@ -55,17 +61,13 @@ export default function useQuery(query: BuilderInterface, page = 1, options: Use
                 });
                 log().error(error);
             });
-    };
-
-    const refreshRef = React.useRef(_.throttle(refresh, throttle));
-
-    React.useEffect(() => {
-        refreshRef.current(query, page, replaceLinksWith);
     }, [query, page, replaceLinksWith]);
+
+    React.useEffect(refresh, [refresh]);
 
     return {
         ...state,
-        refresh: () => refresh(query, page, replaceLinksWith),
+        refresh,
     };
 }
 

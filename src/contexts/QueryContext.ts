@@ -1,12 +1,10 @@
 
 import React from 'react';
-import { BuilderInterface } from '@luminix/core/dist/types/Builder';
 import { Model } from '@luminix/core';
-import { ModelPaginatedLink, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+import { ModelPaginatedLink } from '@luminix/core/dist/types/Model';
 import { Collection } from '@luminix/core/dist/types/Collection';
 
 export type QueryContextValue = {
-    query: BuilderInterface<Model, ModelPaginatedResponse>,
     refresh: () => void;
     data?: Collection<Model>;
     links?: {
@@ -30,7 +28,6 @@ export type QueryContextValue = {
 };
 
 const QueryContext = React.createContext<QueryContextValue>({
-    query: null as unknown as BuilderInterface<Model, ModelPaginatedResponse>,
     refresh: () => {},
     loading: false,
     error: new Error('Trying to access QueryContext outside of QueryProvider'),

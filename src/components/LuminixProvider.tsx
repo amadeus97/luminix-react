@@ -59,7 +59,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
 
         app().on('booted', (e) => {
             const {
-                auth, config: configFacade, model, route
+                route
             } = app().make();
 
             if (typeof route.routerOptions !== 'function') {
@@ -69,12 +69,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
             const options = route.routerOptions({});
 
             setState({
-                auth: {
-                    user: auth.user(),
-                },
                 booted: true,
-                config: configFacade.all(),
-                models: model.make(),
                 router: createBrowserRouter(routes(e.source), options)
             });
 

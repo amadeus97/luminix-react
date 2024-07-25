@@ -1,8 +1,7 @@
 import React from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 import { RouteGenerator } from '@luminix/core/dist/types/Route';
-import { app, isValidationError, log, route } from '@luminix/core';
-import useConfig from './useConfig';
+import { app, config, isValidationError, log, route } from '@luminix/core';
 
 type ApiRequestState<T> = {
     response: T | null;
@@ -58,7 +57,7 @@ const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
         loading: false,
     });
 
-    const debugMode = useConfig('app.debug', false);
+    const debugMode = config('app.debug', false);
     
     const refresh = React.useCallback(() => {
 

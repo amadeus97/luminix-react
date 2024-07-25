@@ -11,10 +11,8 @@ export type QueryProviderProps = {
     Model: typeof Model,
     scope?: Scope<Model, ModelPaginatedResponse>,
     dependencies?: unknown[],
+    children?: React.ReactNode,
 };
-
-
-
 
 const QueryProvider: React.FunctionComponent<QueryProviderProps> = ({
     Model, children,
@@ -23,14 +21,13 @@ const QueryProvider: React.FunctionComponent<QueryProviderProps> = ({
 }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const query = React.useMemo(() => Model.where(scope), [Model, ...dependencies]);
+    const factory = React.useCallback(() => Model.where(scope), [Model, ...dependencies]);
 
-    const results = useBrowsableQuery(query);
+    const results = useBrowsableQuery(factory);
 
     return (
         <QueryContext.Provider
             value={{
-                query,
                 Model,
                 ...results,
             }}

@@ -9,14 +9,10 @@ import useAttributes from './hooks/useAttributes';
 import useBrowsableApiRequest from './hooks/useBrowsableApiRequest';
 import useBrowsableQuery from './hooks/useBrowsableQuery';
 import useCollection from './hooks/useCollection';
-import useConfig from './hooks/useConfig';
 import useCurrentQuery from './hooks/useCurrentQuery';
 import useErrors from './hooks/useErrors';
-import useModel from './hooks/useModel';
-import useModelFind from './hooks/useModelFind';
 import useOn from './hooks/useOn';
 import useQuery from './hooks/useQuery';
-import useQueryAll from './hooks/useQueryAll';
 
 export {
     useAddReducer,
@@ -25,15 +21,11 @@ export {
     useAttributes,
     useBrowsableApiRequest,
     useBrowsableQuery,
-    useConfig,
     useCollection,
     useCurrentQuery,
     useErrors,
-    useModel,
-    useModelFind,
-    useQuery,
-    useQueryAll,
     useOn,
+    useQuery,
 
     LuminixProvider,
     QueryProvider,

@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react';
 
 import dts from 'vite-plugin-dts';
 
+import packageJson from './package.json';
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -18,15 +20,7 @@ export default defineConfig({
         formats: ['es'],
     },
     rollupOptions: {
-      external: [
-        '@luminix/core',
-        'axios',
-        'immer',
-        'lodash',
-        'react',
-        'react-dom',
-        'react-router-dom',
-      ],
+      external: Object.keys(packageJson.peerDependencies),
     }
   }
-})
+});
