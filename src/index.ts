@@ -3,10 +3,9 @@ import QueryProvider from './components/QueryProvider';
 import Fallback from './components/Fallback';
 
 import useAddReducer from './hooks/useAddReducer';
-import useApiRequest from './hooks/useApiRequest';
+import useAxios from './hooks/useAxios';
 import useApplyReducers from './hooks/useApplyReducers';
 import useAttributes from './hooks/useAttributes';
-import useBrowsableApiRequest from './hooks/useBrowsableApiRequest';
 import useBrowsableQuery from './hooks/useBrowsableQuery';
 import useCollection from './hooks/useCollection';
 import useCurrentQuery from './hooks/useCurrentQuery';
@@ -16,10 +15,9 @@ import useQuery from './hooks/useQuery';
 
 export {
     useAddReducer,
-    useApiRequest,
+    useAxios,
     useApplyReducers,
     useAttributes,
-    useBrowsableApiRequest,
     useBrowsableQuery,
     useCollection,
     useCurrentQuery,

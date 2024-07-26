@@ -29,7 +29,7 @@ export default function useBrowsableQuery(queryFactory: () => BuilderInterface) 
         return `${location.pathname}?${searchParams.toString()}`;
     }, [location.pathname, searchParams]);
 
-    const queryResults = useQuery(query, page, { replaceLinksWith });
+    const queryResults = useQuery(query, { replaceLinksWith, page });
 
     // redirect to last page if current page is higher than last page
     const {

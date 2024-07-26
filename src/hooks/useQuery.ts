@@ -2,7 +2,9 @@ import React from 'react';
 
 import { BuilderInterface as Builder } from '@luminix/core/dist/types/Builder';
 import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
-import { log } from '@luminix/core';
+import { Collection } from '@luminix/core/dist/types/Collection';
+import { collect, log } from '@luminix/core';
+import match from '../support/match';
 //import _ from 'lodash';
 
 type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
@@ -14,18 +16,22 @@ type UseQueryState = Partial<ModelPaginatedResponse> & {
 
 export type UseQueryOptions = {
     replaceLinksWith?: string;
-    //throttle?: number;
+    method?: 'get' | 'first' | 'all' | 'find';
+    page?: number;
+    id?: number | string;
 };
 
 /**
  * 
  * Hook to fetch list of models.
  * 
+ * 
+ * 
  */
-export default function useQuery(query: BuilderInterface|null, page = 1, options: UseQueryOptions = {}) {
+export default function useQuery(query: BuilderInterface|null, options: UseQueryOptions = {}) {
 
     const {
-        replaceLinksWith, //throttle = 0,
+        replaceLinksWith, method = 'get', page = 1, id,
     } = options;
 
     const [state, setState] = React.useState<UseQueryState>({
@@ -46,22 +52,46 @@ export default function useQuery(query: BuilderInterface|null, page = 1, options
             return;
         }
 
-        query.get(page, replaceLinksWith)
+        const params = match(method, {
+            get: () => [page, replaceLinksWith],
+            all: () => [],
+            first: () => [],
+            find: () => [id],
+        });
+
+        if (!params) {
+            log().error(`useQuery: method '${method}' is not supported`);
+            return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        query[method](...params as [any, any])
             .then((response) => {
+ 
+                const data = match(method, {
+                    get: () => (response as ModelPaginatedResponse).data,
+                    all: () => response as Collection<Model>,
+                    first: () => response ? collect([response as Model]) : null,
+                    find: () => response ? collect([response as Model]) : null,
+                });
+
                 setState({
                     loading: false, 
                     error: null,
-                    ...response,
+                    data: data ?? undefined,
+                    ...(method === 'get' ? response : undefined),
                 });
             })
-            .catch((error) => {
+            .catch((error: Error) => {
                 setState({
                     loading: false,
                     error,
                 });
                 log().error(error);
             });
-    }, [query, page, replaceLinksWith]);
+
+
+    }, [query, page, replaceLinksWith, method, id]);
 
     React.useEffect(refresh, [refresh]);
 

@@ -49,7 +49,7 @@ const searchParamsFromObject = (params: Record<string, string>) => {
  * }
  * ```
  */
-const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
+const useAxios = <T = unknown>(options: UseApiRequestOptions) => {
     
     const [state, setState] = React.useState<ApiRequestState<T>>({
         response: null,
@@ -131,4 +131,4 @@ const useApiRequest = <T = unknown>(options: UseApiRequestOptions) => {
     };
 };
 
-export default useApiRequest;
+export default useAxios;
