@@ -1,19 +1,19 @@
 import React from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-import { BuilderInterface as Builder } from '@luminix/core/dist/types/Builder';
+import { BuilderInterface } from '@luminix/core/dist/types/Builder';
 
 import useQuery from './useQuery';
 
 import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
 
-type BuilderInterface = Builder<Model, ModelPaginatedResponse>;
+type Builder = BuilderInterface<Model, ModelPaginatedResponse>;
 
 
-export default function useBrowsableQuery(queryFactory: () => BuilderInterface) {
+export default function useBrowsableQuery(queryFactory: () => Builder) {
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const [query, setQuery] = React.useState<BuilderInterface|null>(null);
+    const [query, setQuery] = React.useState<Builder|null>(null);
 
     const location = useLocation();
 

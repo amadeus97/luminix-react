@@ -1,5 +1,5 @@
 import LuminixProvider from './components/LuminixProvider';
-import QueryProvider from './components/QueryProvider';
+import PaginationProvider from './components/PaginationProvider';
 import Fallback from './components/Fallback';
 
 import useAddReducer from './hooks/useAddReducer';
@@ -8,7 +8,7 @@ import useApplyReducers from './hooks/useApplyReducers';
 import useAttributes from './hooks/useAttributes';
 import useBrowsableQuery from './hooks/useBrowsableQuery';
 import useCollection from './hooks/useCollection';
-import useCurrentQuery from './hooks/useCurrentQuery';
+import usePagination from './hooks/usePagination';
 import useErrors from './hooks/useErrors';
 import useOn from './hooks/useOn';
 import useQuery from './hooks/useQuery';
@@ -20,12 +20,12 @@ export {
     useAttributes,
     useBrowsableQuery,
     useCollection,
-    useCurrentQuery,
+    usePagination,
     useErrors,
     useOn,
     useQuery,
 
     LuminixProvider,
-    QueryProvider,
+    PaginationProvider,
     Fallback,
 };
