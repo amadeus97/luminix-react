@@ -9,7 +9,7 @@
         "preview": "vite preview"
     },
     "peerDependencies": {
-        "@luminix/core": "^0.0.1-beta.5",
+        "@luminix/core": "^0.0.1-beta.6",
         "axios": "^1.6.4",
         "immer": "^10.0.4",
         "lodash": "^4.17.21",

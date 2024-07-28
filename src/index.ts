@@ -1,6 +1,7 @@
 import LuminixProvider from './components/LuminixProvider';
 import PaginationProvider from './components/PaginationProvider';
 import Fallback from './components/Fallback';
+import ReactPlugin from './ReactPlugin';
 
 import useAddReducer from './hooks/useAddReducer';
 import useAxios from './hooks/useAxios';
@@ -28,4 +29,6 @@ export {
     LuminixProvider,
     PaginationProvider,
     Fallback,
+
+    ReactPlugin,
 };

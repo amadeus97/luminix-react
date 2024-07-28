@@ -9,6 +9,7 @@ import Fallback from './Fallback';
 
 import { RouteObject, RouterProvider, RouterProviderProps, createBrowserRouter } from 'react-router-dom';
 import LuminixContext, { LuminixContextState, luminixInitialState } from '../contexts/LuminixContext';
+import ReactPlugin from '../ReactPlugin';
 
 
 export type LuminixProviderProps = Omit<RouterProviderProps, "router"> & {
@@ -34,6 +35,8 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
     React.useEffect(() => {
 
         app().on('init', (e) => {
+            e.register(new ReactPlugin());
+
             plugins.forEach((plugin) => {
                 e.register(plugin);
             });
@@ -44,14 +47,6 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
         });
 
         app().on('booting', (e) => {
-            app('route').reducer('replaceRouteParams', (prevUrl: string) => {
-                // remove leading and trailing slashes
-                const url = prevUrl.replace(/^\/+|\/+$/g, '');
-                const regex = /{([^}]+)}/g;
-
-                return `/${url.replace(regex, ':$1')}`;
-            });
-
             if (onBooting) {
                 onBooting(e);
             }
@@ -82,23 +77,6 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    React.useEffect(() => {
-        if (state.booted) {
-            const unsubscribe = app('config').on('change', (e) => {
-                setState((state) => {
-                    return {
-                        ...state,
-                        config: e.source.all(),
-                    };
-                });
-            });
-
-            return () => {
-                unsubscribe();
-            };
-        }
-    }, [state.booted]);
 
     return (
         <LuminixContext.Provider value={state}>
