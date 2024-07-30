@@ -1,46 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
 import { produce } from 'immer';
-import axios, { AxiosResponse, isAxiosError } from 'axios';
-
-import { HttpMethod } from '@luminix/core/dist/types/Route';
+import axios, { isAxiosError } from 'axios';
 
 import { app, error, log } from '@luminix/core';
+import { UseForm, UseFormOptions } from '../types/Form';
 
 
-export type UseFormOptions<T extends object> = {
-    initialValues: T,
-    preventDefault?: boolean,
-    onSubmit?: (values: T) => false | void | Promise<false | void>,
-    onChange?: (values: T) => void,
-    onError?: (error: unknown) => void,
-    onSuccess?: (response: AxiosResponse) => void,
-    transformPayload?: (payload: T) => T,
-    action?: string,
-    method?: HttpMethod,
-    errorBag?: string,
-
-};
-
-export type UseForm<T extends object> = {
-    /** The form data. */
-    data: T,
-    /** Sets a property in the form data. Could be used to set nested values by using dot notation, or set the whole state by using path = '.'. */
-    setProp: (path: string, value: unknown) => void,
-    /** A function that returns the props for the form. */
-    formProps: () => React.FormHTMLAttributes<HTMLFormElement>,
-    /** A function that returns the props for an input or select. */
-    inputProps: (name: string, sanitizeFn?: (event: React.ChangeEvent<HTMLInputElement>) => string) => React.InputHTMLAttributes<HTMLInputElement>,
-    /** A function that returns the props for a checkbox. */
-    checkboxProps: (name: string, sanitizeFn?: (event: React.ChangeEvent<HTMLInputElement>) => boolean) => React.InputHTMLAttributes<HTMLInputElement>,
-    /** Whether the form is currently submitting. */
-    isSubmitting: boolean,
-    /** The current form element. */
-    form?: HTMLFormElement,
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any
-};
 
 function handleError(err: unknown, errorBag: string) {
     if (
@@ -149,12 +115,29 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 setProp(name, sanitizeFn(e));
             },
         });
+
+        const selectProps = (name: string) => ({
+            name,
+            value: _.get(data, name, '') as string,
+            onChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
+                setProp(name, e.target.value);
+            },
+        });
     
-        const checkboxProps = (name: string, sanitizeFn = (e: React.ChangeEvent<HTMLInputElement>) => e.target.checked) => ({
+        const checkboxProps = (name: string) => ({
             name,
             checked: !!_.get(data, name),
             onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                setProp(name, sanitizeFn(e));
+                setProp(name, e.target.checked);
+            },
+        });
+
+        const radioProps = (name: string, value: string) => ({
+            name,
+            value,
+            checked: _.get(data, name) === value,
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setProp(name, e.target.value);
             },
         });
 
@@ -206,9 +189,13 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             setProp,
             formProps,
             inputProps,
+            textareaProps: inputProps,
+            selectProps,
             checkboxProps,
+            radioProps,
             isSubmitting,
             form: formRef.current,
+            errorBag,
         });
     }, [
         data, onChange, isSubmitting, onSubmit, action, method,

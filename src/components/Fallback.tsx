@@ -1,6 +1,7 @@
 import React from 'react';
 import { GridLoader } from 'react-spinners';
 
+
 const Fallback: React.FunctionComponent = () => {
 
     React.useEffect(() => {
@@ -20,6 +21,7 @@ const Fallback: React.FunctionComponent = () => {
                 alt="Luminix"
             />
             <GridLoader color="#1d9798" />
+            
         </div>
     )
 };

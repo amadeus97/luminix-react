@@ -7,11 +7,15 @@ class FormsFacade {
     getUseFormProps(data: object) {
         return {
             ...data,
-            ...this.getUseFormExpandedProps({}, data),
+            ...this.expandUseFormProps({}, data),
         }
     }
 
-    [reducer: string]: ReducerCallback
+    getFormInputComponent(type: string): React.Component {
+        return this.replaceFormInputComponent('input', type);
+    }
+
+    [reducer: string]: ReducerCallback;
 
 }
 

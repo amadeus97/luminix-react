@@ -1,6 +1,7 @@
 import LuminixProvider from './components/LuminixProvider';
 import PaginationProvider from './components/PaginationProvider';
 import Fallback from './components/Fallback';
+import Form from './components/Form';
 import ReactPlugin from './ReactPlugin';
 
 import useAddReducer from './hooks/useAddReducer';
@@ -29,6 +30,7 @@ export {
     LuminixProvider,
     PaginationProvider,
     Fallback,
+    Form,
 
     ReactPlugin,
 };
