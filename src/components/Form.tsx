@@ -26,7 +26,7 @@ function Form<T extends object>(props: FormProps<T>): React.ReactElement {
     });
 
     return (
-        <FormContext.Provider value={form}>
+        <FormContext.Provider value={{ form }}>
             <form
                 {...rest}
                 {...form.formProps()}
