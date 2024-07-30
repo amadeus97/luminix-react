@@ -23,20 +23,20 @@ const Radio: React.FC<InputProps<'radio'>> = (props) => {
     return (
         <>
             {label && (
-                <p>
+                <>
                     <label>
                         {label}
                     </label>
-                </p>
+                </>
             )}
             {options.map(({ value, label }) => (
                 <p key={value}>
                     <input
                         {...rest}
                         {...radioProps(props.name, value)}
-                        id={`${id}::${value}`}
+                        id={id ? `${id}::${value}` : undefined}
                     />
-                    <label htmlFor={`${id}::${value}`}>
+                    <label htmlFor={id ? `${id}::${value}` : undefined}>
                         {label}
                     </label>
                 </p>

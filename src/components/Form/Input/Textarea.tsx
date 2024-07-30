@@ -24,9 +24,14 @@ const Textarea: React.FC<InputProps<'textarea'>> = (props) => {
     return (
         <>
             <p>
-                <label htmlFor={props.id}>
-                    {label}
-                </label>
+                {label && (
+                    <>
+                        <label htmlFor={props.id}>
+                            {label}
+                        </label>
+                        <br/>
+                    </>
+                )}
                 <textarea
                     {...rest}
                     {...textareaProps(props.name, sanitize)}

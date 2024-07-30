@@ -5,7 +5,7 @@ import { app } from '@luminix/core';
 
 function Input<T extends keyof InputPropTypeMap>(props: React.PropsWithChildren<InputProps<T>>) {
 
-    const Component = app('forms').getFormInputComponent(props.type);
+    const Component = React.useMemo(() => app('forms').getFormInputComponent(props.type), [props.type]);
 
     return (
         <Component

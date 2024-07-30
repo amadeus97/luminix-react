@@ -10,9 +10,11 @@ import useApplyReducers from './hooks/useApplyReducers';
 import useAttributes from './hooks/useAttributes';
 import useBrowsableQuery from './hooks/useBrowsableQuery';
 import useCollection from './hooks/useCollection';
-import usePagination from './hooks/usePagination';
+import useCurrentForm from './components/Form/useCurrentForm';
 import useErrors from './hooks/useErrors';
+import useForm from './hooks/useForm';
 import useOn from './hooks/useOn';
+import usePagination from './hooks/usePagination';
 import useQuery from './hooks/useQuery';
 
 export {
@@ -22,9 +24,11 @@ export {
     useAttributes,
     useBrowsableQuery,
     useCollection,
-    usePagination,
+    useCurrentForm,
     useErrors,
+    useForm,
     useOn,
+    usePagination,
     useQuery,
 
     LuminixProvider,

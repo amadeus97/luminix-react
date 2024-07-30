@@ -57,7 +57,7 @@ class ReactPlugin extends Plugin {
             }
 
             return Text;
-        });
+        }, 0);
     }
 }
 

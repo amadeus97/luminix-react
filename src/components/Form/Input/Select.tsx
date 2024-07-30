@@ -23,9 +23,14 @@ const Select: React.FC<InputProps<'select'>> = (props) => {
     return (
         <>
             <p>
-                <label htmlFor={props.id}>
-                    {label}
-                </label>
+                {label && (
+                    <>
+                        <label htmlFor={props.id}>
+                            {label}
+                        </label>
+                        <br/>
+                    </>
+                )}
                 <select
                     {...rest}
                     {...selectProps(props.name)}

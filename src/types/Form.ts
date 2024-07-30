@@ -17,7 +17,7 @@ export type UseFormOptions<T extends object> = {
 
 };
 
-export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElement>, 'onSubmit'> & UseFormOptions<T>;
+export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange' | 'onError' | 'action' | 'method'> & UseFormOptions<T>;
 
 // export type InteractiveFormProps = {
 //     onSubmit: React.FormHTMLAttributes<HTMLFormElement>['onSubmit'],
@@ -112,6 +112,8 @@ export type InputPropTypeMap = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
 };
+
+
 
 export type HTMLInputProps<T extends keyof InputPropTypeMap> = Omit<InputPropTypeMap[T], 'type' | 'children' | 'name' | 'value' | 'onChange' | 'checked'>;
 

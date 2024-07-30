@@ -23,9 +23,14 @@ const Text: React.FC<InputProps<'text'>> = (props) => {
     return (
         <>
             <p>
-                <label htmlFor={props.id}>
-                    {label}
-                </label>
+                {label && (
+                    <>
+                        <label htmlFor={props.id}>
+                            {label}
+                        </label>
+                        <br/>
+                    </>
+                )}
                 <input
                     {...rest}
                     {...inputProps(props.name, sanitize)}

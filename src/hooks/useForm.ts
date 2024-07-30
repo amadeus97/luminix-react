@@ -99,6 +99,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                     log().debug('Form data changed', {
                         form: formRef.current,
                         path,
+                        value,
                         data: newData,
                         prev: data,
                     });

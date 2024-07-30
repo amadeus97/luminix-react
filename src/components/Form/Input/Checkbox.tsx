@@ -27,9 +27,11 @@ const Checkbox: React.FC<InputProps<'checkbox'>> = (props) => {
                     {...rest}
                     {...checkboxProps(props.name)}
                 />
-                <label htmlFor={props.id}>
-                    {label}
-                </label>
+                {label && (
+                    <label htmlFor={props.id}>
+                        {label}
+                    </label>
+                )}
             </p>
             {error && <p>{error}</p>}
         </>
