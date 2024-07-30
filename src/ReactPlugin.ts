@@ -38,7 +38,7 @@ class ReactPlugin extends Plugin {
     }
 
     private registerInputComponents() {
-        this.app!.make('forms').reducer('replaceFormInputComponents', (_: React.Component, type: string) => {
+        this.app!.make('forms').reducer('replaceFormInputComponent', (_: React.Component, type: string) => {
             
             if (type === 'select') {
                 return Select;
