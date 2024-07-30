@@ -5,7 +5,7 @@ import axios, { AxiosResponse, isAxiosError } from 'axios';
 
 import { HttpMethod } from '@luminix/core/dist/types/Route';
 
-import { app, error } from '@luminix/core';
+import { app, error, log } from '@luminix/core';
 
 
 export type UseFormOptions<T extends object> = {
@@ -58,6 +58,10 @@ function handleError(err: unknown, errorBag: string) {
     }
 }
 
+function defaultTransformPayload<T extends object>(payload: T): T {
+    return payload;
+}
+
 /**
  * Creates a form hook that manages form state and handles form submission.
  * 
@@ -101,7 +105,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
 
     const {
         initialValues, onSubmit, onChange, onError, onSuccess, action,
-        transformPayload = (payload) => payload, preventDefault = true,
+        transformPayload = defaultTransformPayload, preventDefault = true,
         errorBag = 'default', method = 'get',
     } = options;
 
@@ -110,6 +114,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     const [data, setData] = React.useState(initialValues);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
 
+    
     return React.useMemo(() => {
 
         const setProp = (path: string, value: unknown) => {
@@ -124,15 +129,38 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                     onChange(newData);
                 }
     
+                if (app().hasDebugModeEnabled()) {
+                    log().debug('Form data changed', {
+                        form: formRef.current,
+                        path,
+                        data: newData,
+                        prev: data,
+                    });
+                }
+    
                 return newData;
             });
         };
+        
+        const inputProps = (name: string, sanitizeFn = (e: React.ChangeEvent<HTMLInputElement>) => e.target.value) => ({
+            name,
+            value: _.get(data, name, '') as string,
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setProp(name, sanitizeFn(e));
+            },
+        });
+    
+        const checkboxProps = (name: string, sanitizeFn = (e: React.ChangeEvent<HTMLInputElement>) => e.target.checked) => ({
+            name,
+            checked: !!_.get(data, name),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setProp(name, sanitizeFn(e));
+            },
+        });
 
         const submit = async (event: React.FormEvent<HTMLFormElement>) => {
-            if (event) {
-                event.preventDefault();
-            }
-    
+            event.preventDefault();
+
             try {
                 setIsSubmitting(true);
                 let submitted: boolean | void = true;
@@ -172,23 +200,8 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             ref: formRef,
         });
 
-        const inputProps = (name: string, sanitizeFn = (e: React.ChangeEvent<HTMLInputElement>) => e.target.value) => ({
-            name,
-            value: _.get(data, name, ''),
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                setProp(name, sanitizeFn(e));
-            },
-        });
 
-        const checkboxProps = (name: string, sanitizeFn = (e: React.ChangeEvent<HTMLInputElement>) => e.target.checked) => ({
-            name,
-            checked: !!_.get(data, name),
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                setProp(name, sanitizeFn(e));
-            },
-        });
-
-        return app('forms').formExpandedProps({
+        return app('forms').getUseFormProps({
             data,
             setProp,
             formProps,
@@ -197,7 +210,10 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             isSubmitting,
             form: formRef.current,
         });
-    }, [action, data, errorBag, isSubmitting, method, onChange, onError, onSubmit, onSuccess, preventDefault, transformPayload]);
+    }, [
+        data, onChange, isSubmitting, onSubmit, action, method,
+        transformPayload, onSuccess, errorBag, onError, preventDefault,
+    ]);
 
 }
 
