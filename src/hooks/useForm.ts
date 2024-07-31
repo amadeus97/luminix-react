@@ -28,6 +28,10 @@ function defaultTransformPayload<T extends object>(payload: T): T {
     return payload;
 }
 
+const throttledDebug = _.throttle((...args: unknown[]) => {
+    log().debug(...args);
+}, 1000);
+
 /**
  * Creates a form hook that manages form state and handles form submission.
  * 
@@ -96,7 +100,14 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 }
     
                 if (app().hasDebugModeEnabled()) {
-                    log().debug('Form data changed', {
+                    // log().debug('Form data changed', {
+                    //     form: formRef.current,
+                    //     path,
+                    //     value,
+                    //     data: newData,
+                    //     prev: data,
+                    // });
+                    throttledDebug('Form data changed', {
                         form: formRef.current,
                         path,
                         value,

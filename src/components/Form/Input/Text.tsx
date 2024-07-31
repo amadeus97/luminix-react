@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { InputProps } from '../../../types/Form';
-import useCurrentForm from '../useCurrentForm';
+import useCurrentForm from '../../../hooks/useCurrentForm';
 import useErrors from '../../../hooks/useErrors';
 import _ from 'lodash';
 
@@ -32,8 +32,8 @@ const Text: React.FC<InputProps<'text'>> = (props) => {
                     </>
                 )}
                 <input
-                    {...rest}
                     {...inputProps(props.name, sanitize)}
+                    {...rest}
                 />
             </p>
             {error && <p>{error}</p>}

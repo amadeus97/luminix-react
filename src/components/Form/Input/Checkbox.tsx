@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { InputProps } from '../../../types/Form';
-import useCurrentForm from '../useCurrentForm';
+import useCurrentForm from '../../../hooks/useCurrentForm';
 import useErrors from '../../../hooks/useErrors';
 import _ from 'lodash';
 
@@ -24,8 +24,8 @@ const Checkbox: React.FC<InputProps<'checkbox'>> = (props) => {
         <>
             <p>
                 <input
-                    {...rest}
                     {...checkboxProps(props.name)}
+                    {...rest}
                 />
                 {label && (
                     <label htmlFor={props.id}>

@@ -2,6 +2,7 @@ import LuminixProvider from './components/LuminixProvider';
 import PaginationProvider from './components/PaginationProvider';
 import Fallback from './components/Fallback';
 import Form from './components/Form';
+import ModelForm from './components/ModelForm';
 import ReactPlugin from './ReactPlugin';
 
 import useAddReducer from './hooks/useAddReducer';
@@ -10,9 +11,10 @@ import useApplyReducers from './hooks/useApplyReducers';
 import useAttributes from './hooks/useAttributes';
 import useBrowsableQuery from './hooks/useBrowsableQuery';
 import useCollection from './hooks/useCollection';
-import useCurrentForm from './components/Form/useCurrentForm';
+import useCurrentForm from './hooks/useCurrentForm';
 import useErrors from './hooks/useErrors';
 import useForm from './hooks/useForm';
+import useModelFormItem from './hooks/useModelFormItem';
 import useOn from './hooks/useOn';
 import usePagination from './hooks/usePagination';
 import useQuery from './hooks/useQuery';
@@ -27,6 +29,7 @@ export {
     useCurrentForm,
     useErrors,
     useForm,
+    useModelFormItem,
     useOn,
     usePagination,
     useQuery,
@@ -35,6 +38,7 @@ export {
     PaginationProvider,
     Fallback,
     Form,
+    ModelForm,
 
     ReactPlugin,
 };

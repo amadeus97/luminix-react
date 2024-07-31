@@ -1,6 +1,6 @@
 import React from "react";
-import FormContext from "../../contexts/FormContext";
-import { UseForm } from "../../types/Form";
+import FormContext from "../contexts/FormContext";
+import { UseForm } from "../types/Form";
 
 /**
  * 

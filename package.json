@@ -1,6 +1,6 @@
 {
     "name": "@luminix/react",
-    "version": "0.0.1-beta.7",
+    "version": "0.0.1-beta.8",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -9,7 +9,7 @@
         "preview": "vite preview"
     },
     "peerDependencies": {
-        "@luminix/core": "^0.0.1-beta.6",
+        "@luminix/core": "^0.0.1-beta.7",
         "axios": "^1.6.4",
         "immer": "^10.0.4",
         "lodash": "^4.17.21",

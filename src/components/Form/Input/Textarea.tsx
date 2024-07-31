@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { InputProps } from '../../../types/Form';
-import useCurrentForm from '../useCurrentForm';
+import useCurrentForm from '../../../hooks/useCurrentForm';
 import useErrors from '../../../hooks/useErrors';
 import _ from 'lodash';
 
@@ -33,8 +33,8 @@ const Textarea: React.FC<InputProps<'textarea'>> = (props) => {
                     </>
                 )}
                 <textarea
-                    {...rest}
                     {...textareaProps(props.name, sanitize)}
+                    {...rest}
                 />
             </p>
             {error && <p>{error}</p>}

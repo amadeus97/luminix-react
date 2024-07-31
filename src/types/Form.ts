@@ -1,5 +1,7 @@
 
+import { Model } from '@luminix/core';
 import { HttpMethod } from '@luminix/core/dist/types/Route';
+import { JsonObject } from '@luminix/core/dist/types/Support';
 import { AxiosResponse } from 'axios';
 
 
@@ -17,7 +19,16 @@ export type UseFormOptions<T extends object> = {
 
 };
 
-export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange' | 'onError' | 'action' | 'method'> & UseFormOptions<T>;
+export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange' | 'onError' | 'action' | 'method' | 'children'> & UseFormOptions<T> & {
+    children?: (data: T, form: Omit<UseForm<T>, 'data'>) => React.ReactNode,
+};
+
+
+export type ModelFormProps = Omit<FormProps<JsonObject>, 'initialValues' | 'action' | 'method' | 'children'> & {
+    item: Model,
+    children?: React.ReactNode | ((data: JsonObject, form: Omit<UseForm<JsonObject>, 'data'>) => React.ReactNode),
+    fillOnChange?: boolean,
+};
 
 // export type InteractiveFormProps = {
 //     onSubmit: React.FormHTMLAttributes<HTMLFormElement>['onSubmit'],
@@ -102,9 +113,6 @@ export type InputPropTypeMap = {
     tel: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
     text: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
     textarea: Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children'> & SanitizableInput<React.ChangeEvent<HTMLTextAreaElement>>,
-    // {
-    //     sanitize?: (e: React.ChangeEvent<HTMLTextAreaElement>) => string,
-    // },
     time: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
     url: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
     week: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
@@ -115,7 +123,7 @@ export type InputPropTypeMap = {
 
 
 
-export type HTMLInputProps<T extends keyof InputPropTypeMap> = Omit<InputPropTypeMap[T], 'type' | 'children' | 'name' | 'value' | 'onChange' | 'checked'>;
+export type HTMLInputProps<T extends keyof InputPropTypeMap> = Omit<InputPropTypeMap[T], 'type' | 'children' | 'name' | 'checked'>;
 
 export type InputProps<T extends keyof InputPropTypeMap> = HTMLInputProps<T> & {
     name: string,
@@ -124,3 +132,8 @@ export type InputProps<T extends keyof InputPropTypeMap> = HTMLInputProps<T> & {
     // error?: string,
 };
 
+export type ModelInputProps<T extends keyof InputPropTypeMap> = HTMLInputProps<T> & {
+    name: string,
+    label?: string,
+    type?: T,
+}

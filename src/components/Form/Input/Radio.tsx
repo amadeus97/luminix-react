@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { InputProps } from '../../../types/Form';
-import useCurrentForm from '../useCurrentForm';
+import useCurrentForm from '../../../hooks/useCurrentForm';
 import useErrors from '../../../hooks/useErrors';
 import _ from 'lodash';
 
@@ -32,9 +32,9 @@ const Radio: React.FC<InputProps<'radio'>> = (props) => {
             {options.map(({ value, label }) => (
                 <p key={value}>
                     <input
-                        {...rest}
-                        {...radioProps(props.name, value)}
                         id={id ? `${id}::${value}` : undefined}
+                        {...radioProps(props.name, value)}
+                        {...rest}
                     />
                     <label htmlFor={id ? `${id}::${value}` : undefined}>
                         {label}

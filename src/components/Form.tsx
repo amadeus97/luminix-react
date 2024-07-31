@@ -4,7 +4,8 @@ import useForm from '../hooks/useForm';
 import FormContext from '../contexts/FormContext';
 import Input from './Form/Input';
 
-function Form<T extends object>(props: FormProps<T>): React.ReactElement {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Form<T extends object>(props: FormProps<T>): React.ReactNode {
 
     const {
         initialValues, onSubmit, onChange, onError, onSuccess,
@@ -25,13 +26,19 @@ function Form<T extends object>(props: FormProps<T>): React.ReactElement {
         method,
     });
 
+    const {
+        data, ...formRest
+    } = form;
+
     return (
         <FormContext.Provider value={{ form }}>
             <form
                 {...rest}
                 {...form.formProps()}
             >
-                {children}
+                {React.isValidElement(children) || !children
+                    ? children 
+                    : children(data, formRest)}
             </form>
         </FormContext.Provider>
     );
