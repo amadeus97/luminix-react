@@ -20,7 +20,7 @@ export type UseFormOptions<T extends object> = {
 };
 
 export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange' | 'onError' | 'action' | 'method' | 'children'> & UseFormOptions<T> & {
-    children?: (data: T, form: Omit<UseForm<T>, 'data'>) => React.ReactNode,
+    children?: ((data: T, form: Omit<UseForm<T>, 'data'>) => React.ReactNode) | React.ReactNode,
 };
 
 

@@ -36,9 +36,9 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
                 {...rest}
                 {...form.formProps()}
             >
-                {React.isValidElement(children) || !children
-                    ? children 
-                    : children(data, formRest)}
+                {typeof children === 'function'
+                    ? children(data, formRest)
+                    : children}
             </form>
         </FormContext.Provider>
     );
