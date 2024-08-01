@@ -9,8 +9,9 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
 
     const {
         initialValues, onSubmit, onChange, onError, onSuccess,
-        action, transformPayload, preventDefault = true,
-        errorBag, method, children, ...rest
+        action, transformPayload, preventDefault = true, errorBag,
+        method, children, autoSave, debounce, debug,
+        ...rest
     } = props;
 
     const form = useForm({
@@ -24,6 +25,9 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
         preventDefault,
         errorBag,
         method,
+        autoSave,
+        debounce,
+        debug,
     });
 
     const {

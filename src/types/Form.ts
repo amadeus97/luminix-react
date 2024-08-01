@@ -1,5 +1,6 @@
 
 import { Model } from '@luminix/core';
+import { ModelSaveOptions } from '@luminix/core/dist/types/Model';
 import { HttpMethod } from '@luminix/core/dist/types/Route';
 import { JsonObject } from '@luminix/core/dist/types/Support';
 import { AxiosResponse } from 'axios';
@@ -16,7 +17,9 @@ export type UseFormOptions<T extends object> = {
     action?: string,
     method?: HttpMethod,
     errorBag?: string,
-
+    autoSave?: boolean,
+    debounce?: number,
+    debug?: boolean,
 };
 
 export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange' | 'onError' | 'action' | 'method' | 'children'> & UseFormOptions<T> & {
@@ -28,6 +31,7 @@ export type ModelFormProps = Omit<FormProps<JsonObject>, 'initialValues' | 'acti
     item: Model,
     children?: React.ReactNode | ((data: JsonObject, form: Omit<UseForm<JsonObject>, 'data'>) => React.ReactNode),
     fillOnChange?: boolean,
+    getSaveOptions?: (data: JsonObject) => ModelSaveOptions,
 };
 
 // export type InteractiveFormProps = {

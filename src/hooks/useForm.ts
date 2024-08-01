@@ -76,7 +76,8 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     const {
         initialValues, onSubmit, onChange, onError, onSuccess, action,
         transformPayload = defaultTransformPayload, preventDefault = true,
-        errorBag = 'default', method = 'get',
+        errorBag = 'default', method, autoSave = false,
+        debounce = 1000, debug = false,
     } = options;
 
     const formRef = React.useRef<HTMLFormElement>();
@@ -84,6 +85,20 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     const [data, setData] = React.useState(initialValues);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debouncedAutoSave = React.useCallback(_.debounce(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        (_data: T) => {
+            if (autoSave) {
+                formRef.current?.submit();
+            }
+        },
+        debounce
+    ), [debounce, autoSave]);
+
+    React.useEffect(() => {
+        debouncedAutoSave(data);
+    }, [debouncedAutoSave, data]);
     
     return React.useMemo(() => {
 
@@ -99,14 +114,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                     onChange(newData);
                 }
     
-                if (app().hasDebugModeEnabled()) {
-                    // log().debug('Form data changed', {
-                    //     form: formRef.current,
-                    //     path,
-                    //     value,
-                    //     data: newData,
-                    //     prev: data,
-                    // });
+                if (debug) {
                     throttledDebug('Form data changed', {
                         form: formRef.current,
                         path,
@@ -122,7 +130,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
         
         const inputProps = (name: string, sanitizeFn = (e: React.ChangeEvent<HTMLInputElement>) => e.target.value) => ({
             name,
-            value: _.get(data, name, '') as string,
+            value: _.get(data, name, '') ?? '',
             onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                 setProp(name, sanitizeFn(e));
             },
@@ -130,7 +138,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
 
         const selectProps = (name: string) => ({
             name,
-            value: _.get(data, name, '') as string,
+            value: _.get(data, name, '') ?? '',
             onChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
                 setProp(name, e.target.value);
             },
@@ -173,6 +181,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                         onSuccess(response);
                     }
                 }
+
             } catch (error) {
                 handleError(error, errorBag);
     
@@ -210,7 +219,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             errorBag,
         });
     }, [
-        data, onChange, isSubmitting, onSubmit, action, method,
+        data, onChange, isSubmitting, onSubmit, action, method, debug,
         transformPayload, onSuccess, errorBag, onError, preventDefault,
     ]);
 

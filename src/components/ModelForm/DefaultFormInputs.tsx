@@ -2,78 +2,24 @@
 import React from 'react';
 
 import useModelFormItem from '../../hooks/useModelFormItem';
-import { collect, model } from '@luminix/core';
+import { app } from '@luminix/core';
 import Input from '../Form/Input';
-import _ from 'lodash';
 
 
-const DefaultFormInputs: React.FC = () => {
+import { InputProps } from '../../types/Form';
+
+
+function DefaultFormInputs(): React.ReactNode {
 
     const item = useModelFormItem();
-    const modelType = item.getType();
 
-    const attributes = React.useMemo(() => collect(model(modelType).getSchema().attributes), [modelType]);
+    return React.useMemo(() => {
 
-    return item.fillable.map((key) => {
-        const attribute = attributes.where('name', key).first();
+        const inputProps = app('forms').getDefaultInputsForModel(item);
 
-        if (!attribute) {
-            return null;
-        }
+        return inputProps.map((props: InputProps<string> | null) => props && <Input key={props.name} {...props} />);
+    }, [item]);
 
-        if (attribute.cast) {
-
-            const castTypeMap: Record<string, string> = {
-                date: 'date',
-                datetime: 'datetime-local',
-                hashed: 'password',
-                int: 'number',
-                float: 'number',
-                boolean: 'checkbox',
-            };
-
-            return (
-                <Input 
-                    name={key}
-                    type={castTypeMap[attribute.cast] ?? 'text'}
-                    label={_.upperFirst(key)}
-                />
-            );
-        }
-
-        if (attribute.type) {
-
-            const typeMap: Record<string, string> = {
-                string: 'text',
-                boolean: 'checkbox',
-                int: 'number',
-                float: 'number',
-                date: 'date',
-                datetime: 'datetime-local',
-                hashed: 'password',
-            };
-
-            return (
-                <Input
-                    name={key}
-                    type={typeMap[attribute.type] ?? 'text'}
-                    label={_.upperFirst(key)}
-                />
-            );
-        }
-
-
-        return (
-            <Input
-                name={key}
-                type="text"
-                label={_.upperFirst(key)}
-            />
-        );
-
-    });
-};
-
-
+}
 
 export default DefaultFormInputs;
