@@ -37,10 +37,12 @@ function ModelForm({
     getSaveOptions = DEFAULT_GET_SAVE_OPTIONS,
     hideSubmit = false,
     submitText = 'Submit',
+    confirmed: confirmedProp = [],
     ...rest
 }: ModelFormProps): React.ReactNode {
 
     const saveRoute = item.getRouteForSave();
+    const confirmed = typeof confirmedProp === 'string' ? [confirmedProp] : confirmedProp;
 
     const handleSubmit: (data: JsonObject) => Promise<false> = React.useCallback(async (data) => {
         let shouldSubmit: boolean | void = true;
@@ -76,7 +78,7 @@ function ModelForm({
                         return (
                             <>
                                 <ModelSaveListener />
-                                <DefaultFormInputs />
+                                <DefaultFormInputs confirmed={confirmed} />
                                 {!hideSubmit && (
                                     <Submit>{submitText}</Submit>
                                 )}

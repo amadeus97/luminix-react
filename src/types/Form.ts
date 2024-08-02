@@ -30,18 +30,11 @@ export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElem
 export type ModelFormProps = Omit<FormProps<JsonObject>, 'initialValues' | 'action' | 'method' | 'children'> & {
     item: Model,
     children?: React.ReactNode | ((data: JsonObject, form: Omit<UseForm<JsonObject>, 'data'>) => React.ReactNode),
-    //fillOnChange?: boolean,
     getSaveOptions?: (data: JsonObject) => ModelSaveOptions,
     hideSubmit?: boolean,
     submitText?: string,
+    confirmed?: string|string[],
 };
-
-// export type InteractiveFormProps = {
-//     onSubmit: React.FormHTMLAttributes<HTMLFormElement>['onSubmit'],
-//     action: React.FormHTMLAttributes<HTMLFormElement>['action'],
-//     method: React.FormHTMLAttributes<HTMLFormElement>['method'],
-//     ref: React.RefObject<HTMLFormElement>,
-// };
 
 export type InteractiveFormProps = Pick<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'action' | 'method'> & {
     ref: React.RefObject<HTMLFormElement>,

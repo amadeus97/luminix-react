@@ -9,16 +9,17 @@ import Input from '../Form/Input';
 import { InputProps } from '../../types/Form';
 
 
-function DefaultFormInputs(): React.ReactNode {
+function DefaultFormInputs({ confirmed = [] }: { confirmed?: string[] }): React.ReactNode {
 
     const item = useModelFormItem();
 
     return React.useMemo(() => {
 
-        const inputProps = app('forms').getDefaultInputsForModel(item);
+        const inputProps = app('forms').getDefaultInputsForModel(item, confirmed);
 
         return inputProps.map((props: InputProps<string> | null) => props && <Input key={props.name} {...props} />);
-    }, [item]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [item, ...confirmed]);
 
 }
 

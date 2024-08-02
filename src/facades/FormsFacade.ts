@@ -16,57 +16,72 @@ class FormsFacade {
         return this.replaceFormInputComponent('input', type);
     }
 
-    getDefaultInputsForModel(item: Model) {
+    getDefaultInputsForModel(item: Model, confirmed: string[] = []) {
         const modelType = item.getType();
         const attributes = collect(model(modelType).getSchema().attributes);
 
-        const basePropsArray = item.fillable.map((key) => {
-            const attribute = attributes.where('name', key).first();
-
-            if (!attribute) {
-                return null;
-            }
-
-            const castTypeMap: Record<string, string> = this.mapAttributeCastToInputTypes({
-                date: 'date',
-                datetime: 'datetime-local',
-                hashed: 'password',
-                int: 'number',
-                float: 'number',
-                boolean: 'checkbox',
-            }, item, attribute);
-
-            if (attribute.cast && attribute.cast in castTypeMap) {
+        const basePropsArray = item.fillable.flatMap((key) => {
+            const baseProps = ((key) => {
+                const attribute = attributes.where('name', key).first();
+    
+                if (!attribute) {
+                    return null;
+                }
+    
+                const castTypeMap: Record<string, string> = this.mapAttributeCastToInputTypes({
+                    date: 'date',
+                    datetime: 'datetime-local',
+                    hashed: 'password',
+                    int: 'number',
+                    float: 'number',
+                    boolean: 'checkbox',
+                }, item, attribute);
+    
+                if (attribute.cast && attribute.cast in castTypeMap) {
+                    return {
+                        name: key,
+                        type: castTypeMap[attribute.cast] ?? 'text',
+                        label: _.upperFirst(key),
+                    };
+                }
+    
+                const typeMap: Record<string, string> = this.mapAttributeTypeToInputTypes({
+                    string: 'text',
+                    boolean: 'checkbox',
+                    int: 'number',
+                    float: 'number',
+                    date: 'date',
+                    datetime: 'datetime-local',
+                    hashed: 'password',
+                }, item, attribute);
+    
+                if (attribute.type && attribute.type in typeMap) {
+                    return {
+                        name: key,
+                        type: typeMap[attribute.type] ?? 'text',
+                        label: _.upperFirst(key),
+                    };
+                }
+    
                 return {
                     name: key,
-                    type: castTypeMap[attribute.cast] ?? 'text',
+                    type: 'text',
                     label: _.upperFirst(key),
                 };
+            })(key);
+
+            if (confirmed.includes(key) && baseProps) {
+                return [
+                    baseProps,
+                    {
+                        ...baseProps,
+                        name: `${key}_confirmation`,
+                        label: `Confirm ${baseProps.label}`
+                    }
+                ];
             }
 
-            const typeMap: Record<string, string> = this.mapAttributeTypeToInputTypes({
-                string: 'text',
-                boolean: 'checkbox',
-                int: 'number',
-                float: 'number',
-                date: 'date',
-                datetime: 'datetime-local',
-                hashed: 'password',
-            }, item, attribute);
-
-            if (attribute.type && attribute.type in typeMap) {
-                return {
-                    name: key,
-                    type: typeMap[attribute.type] ?? 'text',
-                    label: _.upperFirst(key),
-                };
-            }
-
-            return {
-                name: key,
-                type: 'text',
-                label: _.upperFirst(key),
-            };
+            return baseProps;
         });
 
         return this[`selectDefaultInputsFor${_.upperFirst(_.camelCase(item.getType()))}`](basePropsArray, item);
