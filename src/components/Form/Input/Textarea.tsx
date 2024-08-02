@@ -14,12 +14,12 @@ const Textarea: React.FC<InputProps<'textarea'>> = (props) => {
     } = props;
 
     const { 
-        textareaProps,
+        textareaProps, errorBag,
     } = useCurrentForm();
 
     const {
         [`${_.camelCase(props.name)}Error`]: error,
-    } = useErrors();
+    } = useErrors(errorBag);
 
     return (
         <>

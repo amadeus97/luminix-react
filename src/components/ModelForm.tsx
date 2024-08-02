@@ -1,38 +1,46 @@
 import React from 'react';
-import { Model } from '@luminix/core';
-import { JsonObject } from '@luminix/core/dist/types/Support';
 
+import { JsonObject } from '@luminix/core/dist/types/Support';
 import { ModelFormProps } from '../types/Form';
 import Form from './Form';
 import DefaultFormInputs from './ModelForm/DefaultFormInputs';
 import Input from './Form/Input';
 import ModelFormContext from '../contexts/ModelFormContext';
-
-function useFillOnChange(item: Model, onChange?: (data: JsonObject) => void) {
-    return React.useCallback((data: JsonObject) => {
-        item.fill(data);
-        if (onChange) {
-            onChange(data);
-        }
-    }, [item, onChange]);
-}
+import { route } from '@luminix/core';
+import useCurrentForm from '../hooks/useCurrentForm';
+import Submit from './ModelForm/Submit';
 
 const DEFAULT_GET_SAVE_OPTIONS = () => ({});
 
+function ModelSaveListener(): React.ReactNode {
+
+    const { item } = React.useContext(ModelFormContext);
+
+    const { setProp } = useCurrentForm();
+
+    React.useEffect(() => {
+        return item.on('save', () => {
+            setProp('.', item.toJson());
+        });
+
+    }, [item, setProp]);
+
+    return null;
+}
 
 function ModelForm({
     item,
     children,
-    onChange,
     onSubmit,
     onSuccess,
     onError,
     getSaveOptions = DEFAULT_GET_SAVE_OPTIONS,
-    fillOnChange = false,
+    hideSubmit = false,
+    submitText = 'Submit',
     ...rest
 }: ModelFormProps): React.ReactNode {
 
-    const onChangeWithFill = useFillOnChange(item, onChange);
+    const saveRoute = item.getRouteForSave();
 
     const handleSubmit: (data: JsonObject) => Promise<false> = React.useCallback(async (data) => {
         let shouldSubmit: boolean | void = true;
@@ -57,25 +65,40 @@ function ModelForm({
         <ModelFormContext.Provider value={{ item }}>
             <Form
                 initialValues={item.toJson()}
-                onChange={fillOnChange ? onChangeWithFill : onChange}
                 onSubmit={handleSubmit}
+                action={route().url(saveRoute)}
+                method={route().methods(saveRoute)[0]}
+                errorBag={item.getErrorBag(item.exists ? 'update' : 'store')}
                 {...rest}
             >
                 {(data, form) => {
                     if (!children) {
                         return (
                             <>
+                                <ModelSaveListener />
                                 <DefaultFormInputs />
-                                <button type="submit">Submit</button>
+                                {!hideSubmit && (
+                                    <Submit>{submitText}</Submit>
+                                )}
                             </>
                         );
                     }
 
                     if (typeof children === 'function') {
-                        return children(data, form);
+                        return (
+                            <>
+                                <ModelSaveListener />
+                                {children(data, form)}
+                            </>
+                        );
                     }
 
-                    return children;
+                    return (
+                        <>
+                            <ModelSaveListener />
+                            {children}
+                        </>
+                    );
                 }}
             </Form>
         </ModelFormContext.Provider>
@@ -84,7 +107,7 @@ function ModelForm({
 }
 
 ModelForm.Input = Input;
-
 ModelForm.DefaultInputs = DefaultFormInputs;
+ModelForm.Submit = Submit;
 
 export default ModelForm;

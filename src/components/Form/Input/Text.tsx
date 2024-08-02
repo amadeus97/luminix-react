@@ -13,12 +13,12 @@ const Text: React.FC<InputProps<'text'>> = (props) => {
     } = props;
 
     const { 
-        inputProps,
+        inputProps, errorBag,
     } = useCurrentForm();
 
     const {
         [`${_.camelCase(props.name)}Error`]: error,
-    } = useErrors();
+    } = useErrors(errorBag);
 
     return (
         <>

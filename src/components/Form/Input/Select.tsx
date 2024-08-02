@@ -13,12 +13,12 @@ const Select: React.FC<InputProps<'select'>> = (props) => {
     } = props;
 
     const {
-        selectProps,
+        selectProps, errorBag,
     } = useCurrentForm();
 
     const {
         [`${_.camelCase(props.name)}Error`]: error,
-    } = useErrors();
+    } = useErrors(errorBag);
 
     return (
         <>

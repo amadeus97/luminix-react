@@ -12,7 +12,7 @@ export type UseFormOptions<T extends object> = {
     onSubmit?: (data: T) => false | void | Promise<false | void>,
     onChange?: (data: T) => void,
     onError?: (error: unknown) => void,
-    onSuccess?: (response: AxiosResponse) => void,
+    onSuccess?: (response: AxiosResponse|void) => void,
     transformPayload?: (payload: T) => T,
     action?: string,
     method?: HttpMethod,
@@ -30,8 +30,10 @@ export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElem
 export type ModelFormProps = Omit<FormProps<JsonObject>, 'initialValues' | 'action' | 'method' | 'children'> & {
     item: Model,
     children?: React.ReactNode | ((data: JsonObject, form: Omit<UseForm<JsonObject>, 'data'>) => React.ReactNode),
-    fillOnChange?: boolean,
+    //fillOnChange?: boolean,
     getSaveOptions?: (data: JsonObject) => ModelSaveOptions,
+    hideSubmit?: boolean,
+    submitText?: string,
 };
 
 // export type InteractiveFormProps = {

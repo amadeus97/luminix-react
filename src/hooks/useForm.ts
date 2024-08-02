@@ -90,7 +90,10 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         (_data: T) => {
             if (autoSave) {
-                formRef.current?.submit();
+                formRef.current?.dispatchEvent(new Event('submit', { 
+                    cancelable: true,
+                    bubbles: true
+                }));
             }
         },
         debounce
@@ -200,7 +203,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 ? undefined
                 : submit,
             action,
-            method,
+            method: method?.toUpperCase(),
             ref: formRef,
         });
 

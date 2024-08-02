@@ -13,12 +13,12 @@ const Checkbox: React.FC<InputProps<'checkbox'>> = (props) => {
     } = props;
 
     const { 
-        checkboxProps,
+        checkboxProps, errorBag,
     } = useCurrentForm();
 
     const {
         [`${_.camelCase(props.name)}Error`]: error,
-    } = useErrors();
+    } = useErrors(errorBag);
 
     return (
         <>

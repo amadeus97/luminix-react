@@ -13,12 +13,12 @@ const Radio: React.FC<InputProps<'radio'>> = (props) => {
     } = props;
 
     const {
-        radioProps,
+        radioProps, errorBag,
     } = useCurrentForm();
 
     const {
         [`${_.camelCase(props.name)}Error`]: error,
-    } = useErrors();
+    } = useErrors(errorBag);
 
     return (
         <>
