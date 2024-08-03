@@ -1,6 +1,7 @@
 import React from 'react';
-
+import _ from 'lodash';
 import { JsonObject } from '@luminix/core/dist/types/Support';
+
 import { ModelFormProps } from '../types/Form';
 import Form from './Form';
 import DefaultFormInputs from './ModelForm/DefaultFormInputs';
@@ -42,7 +43,7 @@ function ModelForm({
 }: ModelFormProps): React.ReactNode {
 
     const saveRoute = item.getRouteForSave();
-    const confirmed = typeof confirmedProp === 'string' ? [confirmedProp] : confirmedProp;
+    const confirmed = React.useMemo(() => typeof confirmedProp === 'string' ? [confirmedProp] : confirmedProp, [confirmedProp]);
 
     const handleSubmit: (data: JsonObject) => Promise<false> = React.useCallback(async (data) => {
         let shouldSubmit: boolean | void = true;
@@ -54,14 +55,25 @@ function ModelForm({
         item.fill(data);
 
         if (false !== shouldSubmit) {
-            const options = getSaveOptions(data);
-            item.save(options)
+
+            const { additionalPayload, ...options } = getSaveOptions(data);
+
+            const saveOptions = { 
+                additionalPayload: {
+                    ...additionalPayload,
+                    ..._.pick(data, confirmed.map((key) => `${key}_confirmation`)),
+                },
+                ...options,
+            };
+
+            item.save(saveOptions)
                 .then(onSuccess)
                 .catch(onError)
         }
 
         return false;
-    }, [item, onSubmit, onSuccess, onError, getSaveOptions]);
+
+    }, [item, onSubmit, onSuccess, onError, getSaveOptions, confirmed]);
 
     return (
         <ModelFormContext.Provider value={{ item }}>

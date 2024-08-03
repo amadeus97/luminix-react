@@ -1,8 +1,12 @@
 import React from 'react';
 
-function Submit({ children, ...rest }: React.HTMLAttributes<HTMLButtonElement>): React.ReactNode {
+function Submit({ children, className, ...rest }: React.HTMLAttributes<HTMLButtonElement>): React.ReactNode {
     return (
-        <button type="submit" {...rest}>
+        <button
+            type="submit"
+            className={`luminix-form-submit ${className ?? ''}`.trim()}
+            {...rest}
+        >
             {children}
         </button>
     );

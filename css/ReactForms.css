@@ -1,0 +1,75 @@
+
+.luminix-form p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.luminix-form .luminix-form-control {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.luminix-form .luminix-form-input {
+    width: 100%;
+    padding: 0.75em;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    outline: none;
+}
+
+.luminix-form .luminix-form-label {
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+.luminix-form .luminix-form-error {
+    color: rgb(231, 69, 28);
+    font-style: italic;
+    font-size: 0.95em;
+}
+
+.luminix-form .luminix-form-input:focus {
+    box-shadow: 0 0 4px 0.15rem #1d979844;
+    border: 1px solid #1d9798;
+}
+
+.luminix-form .luminix-form-control-error .luminix-form-input {
+    /* box-shadow: 0 0 4px 0.15rem rgba(209, 15, 15, 0.75);*/
+    border: 1px solid rgb(231, 69, 28);
+}
+
+.luminix-form .luminix-form-control-error .luminix-form-input:focus {
+    box-shadow: 0 0 4px 0.15rem rgba(231, 69, 28, 0.25);
+}
+
+.luminix-form .luminix-form-control-error .luminix-form-label {
+    color: rgb(231, 69, 28);
+}
+
+.luminix-form .luminix-form-submit {
+    background-color: #1d9798;
+    border: 1px solid #1d9798;
+    padding: 0.5em 1em;
+    border-radius: 0.25rem;
+    color: white;
+    font-weight: 500;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    cursor: pointer;
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 0 0 0 transparent;
+}
+
+.luminix-form .luminix-form-submit:hover {
+    background-color: #36a5a5;
+    border: 1px solid #36a5a5;
+
+}
+
+.luminix-form .luminix-form-submit:active {
+    background-color: #4fb4b4;
+    border: 1px solid #4fb4b4;
+
+    box-shadow: 0 0 0 0.15rem #1d979844;
+}

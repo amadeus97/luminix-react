@@ -9,7 +9,7 @@ import _ from 'lodash';
 const Select: React.FC<InputProps<'select'>> = (props) => {
 
     const {
-        label, options, ...rest
+        label, options, className, ...rest
     } = props;
 
     const {
@@ -25,13 +25,17 @@ const Select: React.FC<InputProps<'select'>> = (props) => {
             <p>
                 {label && (
                     <>
-                        <label htmlFor={props.id}>
+                        <label
+                            className={`luminix-form-label luminix-form-select-label`.trim()}
+                            htmlFor={props.id}
+                        >
                             {label}
                         </label>
                         <br/>
                     </>
                 )}
                 <select
+                    className={`luminix-form-input luminix-form-select-input ${className ?? ''}`.trim()}
                     {...selectProps(props.name)}
                     {...rest}
                 >

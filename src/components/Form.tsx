@@ -10,7 +10,7 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
     const {
         initialValues, onSubmit, onChange, onError, onSuccess,
         action, transformPayload, preventDefault = true, errorBag,
-        method, children, autoSave, debounce, debug,
+        method, children, autoSave, debounce, debug, className,
         ...rest
     } = props;
 
@@ -37,6 +37,7 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
     return (
         <FormContext.Provider value={{ form }}>
             <form
+                className={`luminix-form ${className || ''}`.trim()}
                 {...rest}
                 {...form.formProps()}
             >

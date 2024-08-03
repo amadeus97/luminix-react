@@ -9,7 +9,7 @@ import _ from 'lodash';
 const Checkbox: React.FC<InputProps<'checkbox'>> = (props) => {
 
     const {
-        label, ...rest
+        label, className, ...rest
     } = props;
 
     const { 
@@ -24,11 +24,15 @@ const Checkbox: React.FC<InputProps<'checkbox'>> = (props) => {
         <>
             <p>
                 <input
+                    className={`luminix-form-input luminix-form-checkbox-input ${className ?? ''}`.trim()}
                     {...checkboxProps(props.name)}
                     {...rest}
                 />
                 {label && (
-                    <label htmlFor={props.id}>
+                    <label
+                        htmlFor={props.id}
+                        className="luminix-form-label luminix-form-checkbox-label"
+                    >
                         {label}
                     </label>
                 )}

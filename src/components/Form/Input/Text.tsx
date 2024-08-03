@@ -9,7 +9,7 @@ import _ from 'lodash';
 const Text: React.FC<InputProps<'text'>> = (props) => {
 
     const {
-        label, sanitize, ...rest
+        label, sanitize, className, ...rest
     } = props;
 
     const { 
@@ -25,18 +25,22 @@ const Text: React.FC<InputProps<'text'>> = (props) => {
             <p>
                 {label && (
                     <>
-                        <label htmlFor={props.id}>
+                        <label
+                            className={`luminix-form-label luminix-form-${props.type}-label`.trim()}
+                            htmlFor={props.id}
+                        >
                             {label}
                         </label>
                         <br/>
                     </>
                 )}
                 <input
+                    className={`luminix-form-input luminix-form-${props.type}-input ${className ?? ''}`.trim()}
                     {...inputProps(props.name, sanitize)}
                     {...rest}
                 />
             </p>
-            {error && <p>{error}</p>}
+            {error && <p className="luminix-form-error">{error}</p>}
         </>
     );
 };

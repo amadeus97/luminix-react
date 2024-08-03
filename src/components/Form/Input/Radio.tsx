@@ -9,7 +9,7 @@ import _ from 'lodash';
 const Radio: React.FC<InputProps<'radio'>> = (props) => {
 
     const {
-        label, options, id, ...rest
+        label, options, className, id, ...rest
     } = props;
 
     const {
@@ -24,7 +24,7 @@ const Radio: React.FC<InputProps<'radio'>> = (props) => {
         <>
             {label && (
                 <>
-                    <label>
+                    <label className="luminix-form-label luminix-form-radio-label" >
                         {label}
                     </label>
                 </>
@@ -33,6 +33,7 @@ const Radio: React.FC<InputProps<'radio'>> = (props) => {
                 <p key={value}>
                     <input
                         id={id ? `${id}::${value}` : undefined}
+                        className={`luminix-form-input luminix-form-radio-input ${className ?? ''}`.trim()}
                         {...radioProps(props.name, value)}
                         {...rest}
                     />
