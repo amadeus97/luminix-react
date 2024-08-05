@@ -12,7 +12,7 @@ export type UseFormOptions<T extends object> = {
     onSubmit?: (data: T) => false | void | Promise<false | void>,
     onChange?: (data: T) => void,
     onError?: (error: unknown) => void,
-    onSuccess?: (response: AxiosResponse|void) => void,
+    onSuccess?: (response: AxiosResponse) => void,
     transformPayload?: (payload: T) => T,
     action?: string,
     method?: HttpMethod,

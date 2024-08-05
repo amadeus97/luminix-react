@@ -67,7 +67,11 @@ function ModelForm({
             };
 
             item.save(saveOptions)
-                .then(onSuccess)
+                .then((response) => {
+                    if (onSuccess && response) {
+                        onSuccess(response);
+                    }
+                })
                 .catch(onError)
         }
 
