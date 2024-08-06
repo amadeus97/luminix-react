@@ -1,61 +1,84 @@
 
+:root {
+    --luminix-form-theme-color: #1d9798;
+    --luminix-form-spacing: 0.5em;
+    --luminix-form-error-color: #e7451c;
+    --luminix-form-error-font-size: 0.95em;
+    --luminix-form-label-color: #6c757d;
+    --luminix-form-label-font-size: 0.85em;
+    --luminix-form-input-border-color: #ced4da;
+    --luminix-form-input-border-radius: 0.5em;
+    --luminix-form-input-font-size: 1em;
+    --luminix-form-input-color: #212529;
+    --luminix-form-input-background-color: transparent;
+    --luminix-form-input-focus-border-color: #1d9798;
+    --luminix-form-input-focus-box-shadow: 0 0 4px 0.15rem #1d989866;
+    --luminix-form-input-focus-error-box-shadow: 0 0 4px 0.15rem #e7451c66;
+
+
+
+}
+
 .luminix-form p {
     margin-top: 0;
     margin-bottom: 0;
 }
 
 .luminix-form .luminix-form-control {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+    padding-top: var(--luminix-form-spacing);
+    padding-bottom: var(--luminix-form-spacing);
 }
 
 .luminix-form .luminix-form-input {
     width: 100%;
-    padding: 0.75em;
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
+    padding: calc(var(--luminix-form-spacing) * 1.5);
+    border: 1px solid var(--luminix-form-input-border-color);
+    border-radius: var(--luminix-form-input-border-radius);
     outline: none;
     box-shadow: 0 0 0 0 transparent;
     transition: box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    color: var(--luminix-form-input-color);
+    background-color: var(--luminix-form-input-background-color);
+    font-size: var(--luminix-form-input-font-size);
 }
 
 .luminix-form .luminix-form-label {
-    font-size: 0.85em;
-    color: #6c757d;
+    font-size: var(--luminix-form-label-font-size);
+    color: var(--luminix-form-label-color);
 }
 
 .luminix-form .luminix-form-error {
-    color: rgb(231, 69, 28);
+    color: var(--luminix-form-error-color);
     font-style: italic;
-    font-size: 0.95em;
+    font-size: var(--luminix-form-error-font-size);
 }
 
 .luminix-form .luminix-form-input:focus {
-    box-shadow: 0 0 4px 0.15rem #1d979844;
-    border: 1px solid #1d9798;
+    /* box-shadow: 0 0 4px 0.15rem #1d979844; */
+    border: 1px solid var(--luminix-form-input-focus-border-color);
+    box-shadow: var(--luminix-form-input-focus-box-shadow);
 }
 
 .luminix-form .luminix-form-control-error .luminix-form-input {
-    /* box-shadow: 0 0 4px 0.15rem rgba(209, 15, 15, 0.75);*/
-    border: 1px solid rgb(231, 69, 28);
+    border: 1px solid var(--luminix-form-error-color);
 }
 
 .luminix-form .luminix-form-control-error .luminix-form-input:focus {
-    box-shadow: 0 0 4px 0.15rem rgba(231, 69, 28, 0.25);
+    box-shadow: var(--luminix-form-input-focus-error-box-shadow);
 }
 
 .luminix-form .luminix-form-control-error .luminix-form-label {
-    color: rgb(231, 69, 28);
+    color: var(--luminix-form-error-color);
 }
 
 .luminix-form .luminix-form-submit {
-    background-color: #1d9798;
-    border: 1px solid #1d9798;
+    background-color: var(--luminix-form-theme-color);
+    border: 1px solid var(--luminix-form-theme-color);
     padding: 0.5em 1em;
-    border-radius: 0.25rem;
-    color: white;
+    border-radius: var(--luminix-form-input-border-radius);
+    color: #fff;
     font-weight: 500;
-    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out, filter 0.15s ease-in-out;
     cursor: pointer;
     outline: none;
     text-transform: uppercase;
@@ -64,14 +87,30 @@
 }
 
 .luminix-form .luminix-form-submit:hover {
-    background-color: #36a5a5;
-    border: 1px solid #36a5a5;
+    /* background-color: #36a5a5; */
+    filter: brightness(110%);
+    /* border: 1px solid #36a5a5; */
 
 }
 
 .luminix-form .luminix-form-submit:active {
-    background-color: #4fb4b4;
-    border: 1px solid #4fb4b4;
+    /* background-color: #4fb4b4;
+    border: 1px solid #4fb4b4; */
 
-    box-shadow: 0 0 0 0.15rem #1d979844;
+    filter: brightness(115%);
+
+    box-shadow: var(--luminix-form-input-focus-box-shadow);
+}
+
+@media (prefers-color-scheme: dark) {
+
+    :root {
+
+        --luminix-form-input-color: #fff;
+        --luminix-form-input-focus-box-shadow: 0 0 4px 0.15rem #1d9898be;
+        --luminix-form-input-focus-error-box-shadow: 0 0 4px 0.15rem #e7451cbe;
+        --luminix-form-label-color: #cacdcf;
+        --luminix-form-input-border-color: #3d3d41;
+    }
+
 }

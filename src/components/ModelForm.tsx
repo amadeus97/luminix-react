@@ -72,7 +72,7 @@ function ModelForm({
                         onSuccess(response);
                     }
                 })
-                .catch(onError)
+                .catch(onError);
         }
 
         return false;
@@ -96,7 +96,7 @@ function ModelForm({
                                 <ModelSaveListener />
                                 <DefaultFormInputs confirmed={confirmed} />
                                 {!hideSubmit && (
-                                    <Submit>{submitText}</Submit>
+                                    <Submit style={{ marginTop: '1rem' }}>{submitText}</Submit>
                                 )}
                             </>
                         );
