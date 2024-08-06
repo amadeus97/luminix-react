@@ -163,7 +163,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             })(),
             onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                 const { value } = e.target;
-                setProp(name, value ? new Date(value) : null);
+                setProp(name, value ? (new Date(value)).toISOString() : null);
             }
         });
 

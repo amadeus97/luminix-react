@@ -108,6 +108,7 @@ class ReactPlugin extends Plugin {
     
                 const typeMap: Record<string, string> = forms.mapAttributeTypeToInputTypes({
                     'tinyint(1)': 'checkbox',
+                    int: 'number',
                     float: 'number',
                     timestamp: 'datetime-local',
                     text: 'textarea',
@@ -120,7 +121,7 @@ class ReactPlugin extends Plugin {
                 if (attribute.type && attribute.type in typeMap) {
                     return {
                         name: key,
-                        type: typeMap[attribute.type] ?? 'text',
+                        type: typeMap[attribute.type],
                         label: textCase(key),
                         id,
                     };
@@ -135,10 +136,13 @@ class ReactPlugin extends Plugin {
                             type: 'select',
                             label: textCase(key),
                             id,
-                            options: match[1].split(',').map((opt) => {
-                                const unquoted = opt.replace(/['"]+/g, '');
-                                return { label: textCase(unquoted.trim()), value: unquoted.trim() };
-                            }),
+                            options: [
+                                { label: '-- Select a value --', value: '' },
+                                ...match[1].split(',').map((opt) => {
+                                    const unquoted = opt.replace(/['"]+/g, '');
+                                    return { label: textCase(unquoted.trim()), value: unquoted.trim() };
+                                })
+                            ],
                         };
                     }
                 }
