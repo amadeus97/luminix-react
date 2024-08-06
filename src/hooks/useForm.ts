@@ -139,6 +139,34 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             },
         });
 
+        const datetimeLocalProps = (name: string) => ({
+            name,
+            value: (() => {
+                const value: Date | string | null | undefined = _.get(data, name);
+
+                if (value) {
+
+                    const date = value instanceof Date
+                        ? value
+                        : new Date(value);
+
+                    const year = `${date.getFullYear()}`;
+                    const month = `${_.padStart(`${date.getMonth() + 1}`, 2, '0')}`;
+                    const day = `${_.padStart(`${date.getDate()}`, 2, '0')}`;
+                    const hour = `${_.padStart(`${date.getHours()}`, 2, '0')}`;
+                    const minute = `${_.padStart(`${date.getMinutes()}`, 2, '0')}`;
+
+                    return `${year}-${month}-${day}T${hour}:${minute}`;
+                }
+
+                return '';
+            })(),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                const { value } = e.target;
+                setProp(name, value ? new Date(value) : null);
+            }
+        });
+
         const selectProps = (name: string) => ({
             name,
             value: _.get(data, name, '') ?? '',
@@ -217,6 +245,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             selectProps,
             checkboxProps,
             radioProps,
+            datetimeLocalProps,
             isSubmitting,
             form: formRef.current,
             errorBag,

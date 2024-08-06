@@ -1,4 +1,12 @@
 
-export default function match<T = unknown>(value: string, directives: Record<string, () => T>): T | null {
-    return directives[value] ? directives[value]() : null;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function match<T extends Record<string, () => any>, K extends keyof T>(
+    value: K,
+    directives: T,
+): ReturnType<T[K]>
+{
+    return directives[value](); // ? directives[value]() : null;
 }
+
+

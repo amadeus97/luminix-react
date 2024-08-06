@@ -29,7 +29,23 @@
     padding-bottom: var(--luminix-form-spacing);
 }
 
-.luminix-form .luminix-form-input {
+.luminix-form .luminix-form-input[type="text"],
+.luminix-form .luminix-form-input[type="email"],
+.luminix-form .luminix-form-input[type="password"],
+.luminix-form .luminix-form-input[type="number"],
+.luminix-form .luminix-form-input[type="url"],
+.luminix-form .luminix-form-input[type="tel"],
+.luminix-form .luminix-form-input[type="search"],
+.luminix-form .luminix-form-input[type="date"],
+.luminix-form .luminix-form-input[type="datetime-local"],
+.luminix-form .luminix-form-input[type="time"],
+.luminix-form .luminix-form-input[type="month"],
+.luminix-form .luminix-form-input[type="week"],
+.luminix-form .luminix-form-input[type="file"],
+.luminix-form textarea.luminix-form-input,
+.luminix-form select.luminix-form-input
+{
+
     width: 100%;
     padding: calc(var(--luminix-form-spacing) * 1.5);
     border: 1px solid var(--luminix-form-input-border-color);
@@ -111,6 +127,15 @@
         --luminix-form-input-focus-error-box-shadow: 0 0 4px 0.15rem #e7451cbe;
         --luminix-form-label-color: #cacdcf;
         --luminix-form-input-border-color: #3d3d41;
+    }
+
+    .luminix-form .luminix-form-input::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+
+    .luminix-form .luminix-form-select-input option {
+        background-color: #0a1313;
+        color: #fff;
     }
 
 }

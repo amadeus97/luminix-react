@@ -21,70 +21,12 @@ class FormsFacade {
         const attributes = collect(model(modelType).getSchema().attributes);
 
         const basePropsArray = item.fillable.flatMap((key) => {
-            const baseProps = ((key) => {
-                const attribute = attributes.where('name', key).first();
-    
-                if (!attribute) {
-                    return null;
-                }
-    
-                const castTypeMap: Record<string, string> = this.mapAttributeCastToInputTypes({
-                    date: 'date',
-                    datetime: 'datetime-local',
-                    hashed: 'password',
-                    int: 'number',
-                    float: 'number',
-                    boolean: 'checkbox',
-                }, item, attribute);
-    
-                if (attribute.cast && attribute.cast in castTypeMap) {
-                    return {
-                        name: key,
-                        type: castTypeMap[attribute.cast] ?? 'text',
-                        label: _.upperFirst(key),
-                    };
-                }
-    
-                const typeMap: Record<string, string> = this.mapAttributeTypeToInputTypes({
-                    string: 'text',
-                    boolean: 'checkbox',
-                    int: 'number',
-                    float: 'number',
-                    date: 'date',
-                    datetime: 'datetime-local',
-                    hashed: 'password',
-                }, item, attribute);
-    
-                if (attribute.type && attribute.type in typeMap) {
-                    return {
-                        name: key,
-                        type: typeMap[attribute.type] ?? 'text',
-                        label: _.upperFirst(key),
-                    };
-                }
-    
-                return {
-                    name: key,
-                    type: 'text',
-                    label: _.upperFirst(key),
-                };
-            })(key);
-
-            if (confirmed.includes(key) && baseProps) {
-                return [
-                    baseProps,
-                    {
-                        ...baseProps,
-                        name: `${key}_confirmation`,
-                        label: `Confirm ${baseProps.label}`
-                    }
-                ];
-            }
-
-            return baseProps;
+            return this[`getDefaultInputProps`]({
+                name: key,
+            }, { attributes, confirmed, item });
         });
 
-        return this[`selectDefaultInputsFor${_.upperFirst(_.camelCase(item.getType()))}`](basePropsArray, item);
+        return this[`selectDefaultInputsFor${_.upperFirst(_.camelCase(modelType))}`](basePropsArray, item);
     }
 
     [reducer: string]: ReducerCallback;

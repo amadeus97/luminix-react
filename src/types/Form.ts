@@ -67,6 +67,9 @@ export type UseForm<T extends object> = {
     textareaProps: (name: string, sanitizeFn?: (event: React.ChangeEvent<HTMLTextAreaElement>) => string) => InteractiveTextareaProps,
     /** A function that returns the props for a select. */
     selectProps: (name: string) => InteractiveSelectProps,
+    /** A function that returns the props for a datetime-local input. */
+    datetimeLocalProps: (name: string) => InteractiveInputProps,
+
     /** Whether the form is currently submitting. */
     isSubmitting: boolean,
     /** The current form element. */
@@ -93,7 +96,7 @@ export type InputPropTypeMap = {
     checkbox: React.InputHTMLAttributes<HTMLInputElement>,
     color: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
     date: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    ['datetime-local']: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
+    ['datetime-local']: React.InputHTMLAttributes<HTMLInputElement>,
     email: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
     file: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
     hidden: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
