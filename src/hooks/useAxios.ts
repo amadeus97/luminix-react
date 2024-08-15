@@ -9,7 +9,7 @@ type ApiRequestState<T> = {
     loading: boolean;
 };
 
-type UseApiRequestOptions = AxiosRequestConfig & {
+type UseAxiosOptions = AxiosRequestConfig & {
     route?: RouteGenerator;
 };
 
@@ -49,7 +49,7 @@ const searchParamsFromObject = (params: Record<string, string>) => {
  * }
  * ```
  */
-const useAxios = <T = unknown>(options: UseApiRequestOptions) => {
+const useAxios = <T = unknown>(options: UseAxiosOptions) => {
     
     const [state, setState] = React.useState<ApiRequestState<T>>({
         response: null,

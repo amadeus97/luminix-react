@@ -15,9 +15,9 @@ function DefaultFormInputs({ confirmed = [] }: { confirmed?: string[] }): React.
 
     return React.useMemo(() => {
 
-        const inputProps = app('forms').getDefaultInputsForModel(item, confirmed);
+        const inputProps: (InputProps<string>|null)[] = app('forms').getDefaultInputsForModel(item, confirmed);
 
-        return inputProps.map((props: InputProps<string> | null) => props && <Input key={props.name} {...props} />);
+        return inputProps.map((props) => props && <Input key={props.name} {...props} />);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [item, ...confirmed]);
 
