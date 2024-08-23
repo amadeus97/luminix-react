@@ -1,6 +1,6 @@
 {
     "name": "@luminix/react",
-    "version": "0.0.1-beta.20",
+    "version": "0.0.1-beta.21",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -10,7 +10,7 @@
         "publish:beta": "npm run build && npm publish --tag beta"
     },
     "peerDependencies": {
-        "@luminix/core": "^0.0.1-beta.13",
+        "@luminix/core": "^0.0.1-beta.20",
         "axios": "^1.6.4",
         "immer": "^10.0.4",
         "lodash": "^4.17.21",
@@ -34,7 +34,7 @@
         "nanoevents": "^9.0.0",
         "typescript": "^5.2.2",
         "vite": "^5.1.4",
-        "vite-plugin-dts": "^3.7.3"
+        "vite-plugin-dts": "^4.0.3"
     },
     "dependencies": {
         "react-spinners": "^0.14.1"
