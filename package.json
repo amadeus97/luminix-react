@@ -1,6 +1,6 @@
 {
     "name": "@luminix/react",
-    "version": "0.0.1-beta.21",
+    "version": "0.0.1-beta.22",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -10,7 +10,7 @@
         "publish:beta": "npm run build && npm publish --tag beta"
     },
     "peerDependencies": {
-        "@luminix/core": "^0.0.1-beta.20",
+        "@luminix/core": "^0.0.1-beta.21",
         "axios": "^1.6.4",
         "immer": "^10.0.4",
         "lodash": "^4.17.21",
