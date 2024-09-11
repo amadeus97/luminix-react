@@ -1,14 +1,19 @@
 import React from 'react';
-import { ReducibleInterface } from '@luminix/core';
+import {
+    ReducibleInterface, Collection, ReducerCallback,
+    produce, isDraftable,
+} from '@luminix/support';
 import useCollection from './useCollection';
-import { Collection } from '@luminix/core/dist/types/Collection';
-import { Reducer } from '@luminix/core/dist/types/Reducer';
-import { isDraftable, produce } from 'immer';
 
-
-const transform = (collection: Collection<Reducer>) => {
+const transform = (collection: Collection<{ callback: ReducerCallback, priority: number }>) => {
     return collection.pluck('callback');
 };
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type First<T extends any[]> = T extends [infer A, ...any] ? A : unknown;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Tail<T extends any[]> = T extends [any, ...infer R] ? R : unknown[];
 
 /**
  * Runs the reducers of a reducible and returns the result.
@@ -19,18 +24,18 @@ const transform = (collection: Collection<Reducer>) => {
  * 
  * Returns the result of the reducer.
  */
-export default function useApplyReducers(
-    reducible: ReducibleInterface,
-    name: string,
-    value: unknown,
-    ...params: unknown[]
+export default function useApplyReducers<TReducers extends Record<string, ReducerCallback>, K extends keyof TReducers>(
+    reducible: ReducibleInterface<TReducers>,
+    name: K,
+    value: First<Parameters<TReducers[K]>>,
+    ...params: Tail<Parameters<TReducers[K]>>
 ) {
 
     const reducers = useCollection(reducible.getReducer(name), transform);
 
     const result = React.useMemo(() => {
         if (isDraftable(value)) {
-            return produce(value, (draft) => {
+            return produce(value, (draft: unknown) => {
                 return reducers.reduce((acc, reducer) => {
                     return reducer(acc, ...params);
                 }, draft);

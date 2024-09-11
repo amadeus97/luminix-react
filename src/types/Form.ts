@@ -1,8 +1,10 @@
 
-import { Model } from '@luminix/core';
-import { ModelSaveOptions } from '@luminix/core/dist/types/Model';
-import { HttpMethod } from '@luminix/core/dist/types/Route';
-import { JsonObject } from '@luminix/core/dist/types/Support';
+import { Collection, FacadeOf, HasFacadeAccessor, JsonObject, ReducerCallback, ReducibleOf } from '@luminix/support';
+
+import { ModelType as Model, HttpMethod, ModelSaveOptions, ModelType, ModelAttribute } from '@luminix/core';
+// import { ModelSaveOptions } from '@luminix/core/dist/types/Model';
+// import { HttpMethod } from '@luminix/core/dist/types/Route';
+// import { JsonObject } from '@luminix/core/dist/types/Support';
 import { AxiosResponse } from 'axios';
 
 
@@ -139,3 +141,50 @@ export type ModelInputProps<T extends keyof InputPropTypeMap> = HTMLInputProps<T
     label?: string,
     type?: T,
 }
+
+export declare class FormServiceBase {
+
+    getUseFormProps<T extends object>(options: UseForm<T>): UseForm<T>;
+    getFormInputComponent(type: string): React.ElementType;
+    getDefaultInputsForModel(item: ModelType, confirmed?: string[]): ModelInputProps<keyof InputPropTypeMap>[];
+    
+
+}
+
+export type FormServicesReducers = {
+
+    expandUseFormProps<T extends object>(state: Partial<UseForm<T>>, data: T): Partial<UseForm<T>>;
+
+    replaceFormInputComponent(component: React.ElementType, type: string): React.ElementType;
+    
+    getDefaultInputProps(
+        props: ModelInputProps<keyof InputPropTypeMap>,
+        data: {
+            attributes: Collection<ModelAttribute>,
+            confirmed: string[],
+            item: ModelType,
+        }
+    ): ModelInputProps<keyof InputPropTypeMap>[];
+
+    mapAttributeCastToInputTypes(
+        map: Record<string, keyof InputPropTypeMap>,
+        item: ModelType,
+        attribute: ModelAttribute,
+    ): Record<string, keyof InputPropTypeMap>;
+
+    mapAttributeTypeToInputType(
+        map: Record<string, keyof InputPropTypeMap>,
+        item: ModelType,
+        attribute: ModelAttribute,
+    ): Record<string, keyof InputPropTypeMap>;
+
+    // selectDefaultInputsFor${Model}
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [reducer: string]: ReducerCallback;
+
+};
+
+export type FormServiceInterface = ReducibleOf<typeof FormServiceBase, FormServicesReducers>;
+
+export type FormsFacadeInterface = FacadeOf<InstanceType<FormServiceInterface>, HasFacadeAccessor>;

@@ -1,32 +1,47 @@
 import React from 'react';
 
-import { Plugin, app } from '@luminix/core';
-import { AppFacade, InitEvent } from '@luminix/core/dist/types/App';
-import { AppConfiguration } from '@luminix/core/dist/types/Config';
-import { Event } from '@luminix/core/dist/types/Event';
+import { ServiceProvider, ApplicationEvents } from '@luminix/support';
+import {
+    App, AppFacade, AppConfiguration,
+    Route
+} from '@luminix/core';
+
 
 import Fallback from './Fallback';
 
 import { RouteObject, RouterProvider, RouterProviderProps, createBrowserRouter } from 'react-router-dom';
 import LuminixContext, { LuminixContextState, luminixInitialState } from '../contexts/LuminixContext';
-import ReactPlugin from '../ReactPlugin';
+//import ReactPlugin from '../ReactPlugin';
 
+interface DOMRouterOpts {
+    basename?: string;
+    window?: Window;
+}
+
+declare module '@luminix/core' {
+    interface RouteReducers {
+        domRouterOptions(options: DOMRouterOpts): DOMRouterOpts;
+    }
+}
 
 export type LuminixProviderProps = Omit<RouterProviderProps, "router"> & {
     routes: (app: AppFacade) => RouteObject[],
     config?: AppConfiguration,
-    onInit?: (e: InitEvent) => void,
-    onBooting?: (e: Event<AppFacade>) => void,
-    onBooted?: (e: Event<AppFacade>) => void,
-    plugins?: Plugin[],
+    onInit?: ApplicationEvents['init'],
+    onBooting?: ApplicationEvents['booting'],
+    onBooted?: ApplicationEvents['booted'],
+    onReady?: ApplicationEvents['ready'],
+    onFlushing?: ApplicationEvents['flushing'],
+    onFlushed?: ApplicationEvents['flushed'],
+    providers?: (typeof ServiceProvider)[],
     fallbackElement?: React.ReactElement,
 };
 
 
 const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
-    routes, config = {}, plugins = [],
-    onInit, onBooting, onBooted,
-    fallbackElement = <Fallback />,
+    routes, config = {}, providers = [],
+    onInit, onBooting, onBooted, onFlushing,
+    onFlushed, onReady, fallbackElement = <Fallback />,
     ...props
 }) => {
 
@@ -34,49 +49,56 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
 
     React.useEffect(() => {
 
-        app().on('init', (e) => {
-            e.register(new ReactPlugin());
+        const app = App.withProviders([
+            // ReactServiceProvider,
+            ...providers,
+        ]);
 
-            plugins.forEach((plugin) => {
-                e.register(plugin);
-            });
+        if (config) {
+            app.withConfiguration(config);
+        }
 
-            if (onInit) {
-                onInit(e);
-            }
-        });
+        if (onInit) {
+            app.on('init', onInit);
+        }
 
-        app().on('booting', (e) => {
-            if (onBooting) {
-                onBooting(e);
-            }
-        });
+        if (onBooting) {
+            app.on('booting', onBooting);
+        }
 
-        app().on('booted', (e) => {
-            const {
-                route
-            } = app().make();
+        if (onBooted) {
+            app.on('booted', onBooted);
+        }
 
-            if (typeof route.routerOptions !== 'function') {
-                throw new Error('Expect RouteFacade to be Reducible');
-            }
+        if (onReady) {
+            app.on('ready', onReady);
+        }
 
-            const options = route.routerOptions({});
+        if (onFlushing) {
+            app.on('flushing', onFlushing);
+        }
+
+        if (onFlushed) {
+            app.on('flushed', onFlushed);
+        }
+
+        app.on('ready', () => {
+            const options = Route.domRouterOptions({});
 
             setState({
                 booted: true,
-                router: createBrowserRouter(routes(e.source), options)
+                router: createBrowserRouter(routes(app), options)
             });
-
-            if (onBooted) {
-                onBooted(e);
-            }
         });
 
-        app().boot(config);
+        app.create();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        return () => {
+            app.flush();
+            setState(luminixInitialState);
+        }
+
+    }, [config, onBooted, onBooting, onFlushed, onFlushing, onInit, onReady, providers, routes]);
 
     return (
         <LuminixContext.Provider value={state}>

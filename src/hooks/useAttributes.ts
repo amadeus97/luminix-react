@@ -1,7 +1,9 @@
-import { Model } from "@luminix/core";
+import { Str } from "@luminix/support";
+import { ModelType as Model } from "@luminix/core";
 import React from "react";
+
 import useOn from "./useOn";
-import _ from "lodash";
+
 
 type UseAttributesOptions = {
     cast?: boolean;
@@ -11,7 +13,7 @@ const castAttributes = (item: Model) => {
     return Object.keys(item.attributes).reduce((acc, key) => {
         return {
             ...acc,
-            [_.camelCase(key)]: item[key],
+            [Str.camel(key)]: item[key],
         };
     }, {});
 };

@@ -1,5 +1,5 @@
-import { ReducibleInterface } from '@luminix/core';
-import { ReducerCallback } from '@luminix/core/dist/types/Reducer';
+import { ReducibleInterface, ReducerCallback } from '@luminix/support';
+
 import React from 'react';
 
 /**
@@ -29,10 +29,10 @@ import React from 'react';
  * ```
  * 
  */
-export default function useAddReducer(
-    reducible: ReducibleInterface,
-    name: string,
-    reducer: ReducerCallback,
+export default function useAddReducer<TReducers extends Record<string, ReducerCallback>, K extends keyof TReducers>(
+    reducible: ReducibleInterface<TReducers>,
+    name: K,
+    reducer: TReducers[K],
     priority: number = 10,
 ) {
     React.useEffect(() => {

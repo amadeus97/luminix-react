@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import { ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+import { ModelPaginatedResponse } from '@luminix/core';
 
 export type PaginationContextValue = Partial<ModelPaginatedResponse> & {
     refresh: () => void;

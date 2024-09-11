@@ -3,7 +3,7 @@ import PaginationProvider from './components/PaginationProvider';
 import Fallback from './components/Fallback';
 import Form from './components/Form';
 import ModelForm from './components/ModelForm';
-import ReactPlugin from './ReactPlugin';
+import ReactServiceProvider from './ReactServiceProvider';
 
 import useAddReducer from './hooks/useAddReducer';
 import useAxios from './hooks/useAxios';
@@ -40,5 +40,5 @@ export {
     Form,
     ModelForm,
 
-    ReactPlugin,
+    ReactServiceProvider as ReactPlugin,
 };
