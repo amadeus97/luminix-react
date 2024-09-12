@@ -1,20 +1,18 @@
 import React from 'react';
-import _ from 'lodash';
-import { produce } from 'immer';
-import axios, { isAxiosError } from 'axios';
 
-import { app, error, log } from '@luminix/core';
+import { produce, Func, Obj, DateTime, Response, isValidationError } from '@luminix/support';
+import { error, Http, log } from '@luminix/core';
+
 import { UseForm, UseFormOptions } from '../types/Form';
+import Forms from '../facades/Forms';
 
 
 
 function handleError(err: unknown, errorBag: string) {
     if (
-        isAxiosError(err) && err.response?.status === 422
+        isValidationError(err)
     ) {
-        const { data } = err.response;
-
-        const errors = Object.entries(data.errors as Record<string, Array<string>>)
+        const errors = Object.entries(err.json('errors'))
             .reduce((acc, [key, value]) => {
                 acc[key] = value.join(', ');
                 return acc;
@@ -24,17 +22,18 @@ function handleError(err: unknown, errorBag: string) {
     }
 }
 
-function defaultTransformPayload<T extends object>(payload: T): T {
-    return payload;
+function returnSelf<T extends object>(obj: T): T {
+    return obj;
 }
 
-const throttledDebug = _.throttle((...args: unknown[]) => {
+const throttledDebug = Func.throttle((...args: unknown[]) => {
     log().debug(...args);
 }, 1000);
 
 /**
+ *
  * Creates a form hook that manages form state and handles form submission.
- * 
+ *
  * @example
  * ```tsx
  * const { formProps, inputProps, checkboxProps } = useForm({ 
@@ -46,7 +45,7 @@ const throttledDebug = _.throttle((...args: unknown[]) => {
  *     action: route('login'),
  *     method: 'post',
  * });
- * 
+ *
  * return (
  *   <form {...formProps()}>
  *     <input
@@ -75,7 +74,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
 
     const {
         initialValues, onSubmit, onChange, onError, onSuccess, action,
-        transformPayload = defaultTransformPayload, preventDefault = true,
+        transformPayload = returnSelf, tap = returnSelf, preventDefault = true,
         errorBag = 'default', method, autoSave = false,
         debounce = 1000, debug = false,
     } = options;
@@ -86,7 +85,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     const [isSubmitting, setIsSubmitting] = React.useState(false);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const debouncedAutoSave = React.useCallback(_.debounce(
+    const debouncedAutoSave = React.useCallback(Func.debounce(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         (_data: T) => {
             if (autoSave) {
@@ -110,7 +109,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 const newData = path === '.'
                     ? value as T
                     : produce(data, (draft) => {
-                        _.set(draft, path, value);
+                        Obj.set(draft, path, value);
                     });
     
                 if (onChange) {
@@ -131,10 +130,10 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             });
         };
         
-        const inputProps = (name: string, sanitizeFn = (e: React.ChangeEvent<HTMLInputElement>) => e.target.value) => ({
+        const inputProps = <T extends { value?: string }>(name: string, sanitizeFn = (e: React.ChangeEvent<T>) => e.target.value) => ({
             name,
-            value: _.get(data, name, '') ?? '',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+            value: Obj.get(data, name, '') ?? '',
+            onChange: (e: React.ChangeEvent<T>) => {
                 setProp(name, sanitizeFn(e));
             },
         });
@@ -142,21 +141,11 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
         const datetimeLocalProps = (name: string) => ({
             name,
             value: (() => {
-                const value: Date | string | null | undefined = _.get(data, name);
+                const value: Date | string | null | undefined = Obj.get(data, name);
 
                 if (value) {
 
-                    const date = value instanceof Date
-                        ? value
-                        : new Date(value);
-
-                    const year = `${date.getFullYear()}`;
-                    const month = `${_.padStart(`${date.getMonth() + 1}`, 2, '0')}`;
-                    const day = `${_.padStart(`${date.getDate()}`, 2, '0')}`;
-                    const hour = `${_.padStart(`${date.getHours()}`, 2, '0')}`;
-                    const minute = `${_.padStart(`${date.getMinutes()}`, 2, '0')}`;
-
-                    return `${year}-${month}-${day}T${hour}:${minute}`;
+                    return DateTime.toDateTimeLocal(value);
                 }
 
                 return '';
@@ -169,7 +158,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
 
         const selectProps = (name: string) => ({
             name,
-            value: _.get(data, name, '') ?? '',
+            value: Obj.get(data, name, '') ?? '',
             onChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
                 setProp(name, e.target.value);
             },
@@ -177,7 +166,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     
         const checkboxProps = (name: string) => ({
             name,
-            checked: !!_.get(data, name),
+            checked: !!Obj.get(data, name),
             onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                 setProp(name, e.target.checked);
             },
@@ -186,7 +175,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
         const radioProps = (name: string, value: string) => ({
             name,
             value,
-            checked: _.get(data, name) === value,
+            checked: Obj.get(data, name) === value,
             onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                 setProp(name, e.target.value);
             },
@@ -203,27 +192,26 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 }
     
                 if (false !== submitted && action) {
-                    const response = await axios({
-                        method,
-                        url: action,
-                        data: transformPayload(data),
-                    });
-                    if (onSuccess) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const response: Response = await (tap(Http.getClient()) as any)[method ?? 'get'](action, transformPayload(data));
+
+                    if (response.successful() && onSuccess) {
                         onSuccess(response);
+                    } else if (response.failed()) {
+                        handleError(response, errorBag);
+
+                        if (onError) {
+                            onError(response);
+                        }
                     }
                 }
-
             } catch (error) {
-                handleError(error, errorBag);
-    
                 if (onError) {
                     onError(error);
                 }
-                
             } finally {
                 setIsSubmitting(false);
             }
-    
         };
 
         const formProps = () => ({
@@ -235,8 +223,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             ref: formRef,
         });
 
-
-        return app('forms').getUseFormProps({
+        return {
             data,
             setProp,
             formProps,
@@ -249,10 +236,12 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             isSubmitting,
             form: formRef.current,
             errorBag,
-        });
+            ...Forms.expandUseFormProps({}, data)
+        };
     }, [
         data, onChange, isSubmitting, onSubmit, action, method, debug,
         transformPayload, onSuccess, errorBag, onError, preventDefault,
+        tap,
     ]);
 
 }

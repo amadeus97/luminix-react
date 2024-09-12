@@ -1,5 +1,5 @@
 import React from 'react';
-import { Collection } from '@luminix/core/dist/types/Collection';
+import { Collection } from '@luminix/support';
 
 /**
  * Hook to listen to the change event of a collection and update the state accordingly.
@@ -77,11 +77,11 @@ export default function useCollection<T = unknown, V = T>(
             isMountingRef.current = false;
         }
 
-        return collection.on('change', () => {
+        return collection.on('change', ({ items }) => {
             setState(() => {
                 return transform 
-                    ? transform(collection.collect())
-                    : collection.collect();
+                    ? transform(new Collection(items))
+                    : new Collection(items);
             });
         });
     }, [collection, transform]);

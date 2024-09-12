@@ -1,6 +1,6 @@
+import { Event, EventSource } from '@luminix/support';
+
 import React from 'react';
-import { EventSource } from '@luminix/core';
-import { EventSourceEvents } from '@luminix/core/dist/types/Event';
 
 /**
  * Adds an event listener to the event source during the component lifecycle.
@@ -24,10 +24,11 @@ import { EventSourceEvents } from '@luminix/core/dist/types/Event';
  * ```
  * 
  */
-export default function useOn<S extends EventSource<T>, T extends EventSourceEvents, E extends keyof T>(
-    eventSource: S | null,
-    eventName: E,
-    callback: T[E],
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function useOn(
+    eventSource: EventSource | null,
+    eventName: string,
+    callback: (e: Event) => void,
 ) {
     React.useEffect(() => {
         if (eventSource) {

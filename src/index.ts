@@ -6,7 +6,7 @@ import ModelForm from './components/ModelForm';
 import ReactServiceProvider from './ReactServiceProvider';
 
 import useAddReducer from './hooks/useAddReducer';
-import useAxios from './hooks/useAxios';
+import useRequest from './hooks/useRequest';
 import useApplyReducers from './hooks/useApplyReducers';
 import useAttributes from './hooks/useAttributes';
 import useBrowsableQuery from './hooks/useBrowsableQuery';
@@ -21,7 +21,6 @@ import useQuery from './hooks/useQuery';
 
 export {
     useAddReducer,
-    useAxios,
     useApplyReducers,
     useAttributes,
     useBrowsableQuery,
@@ -29,6 +28,7 @@ export {
     useCurrentForm,
     useErrors,
     useForm,
+    useRequest,
     useModelFormItem,
     useOn,
     usePagination,

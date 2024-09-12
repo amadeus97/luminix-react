@@ -1,11 +1,10 @@
 import React from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { BuilderInterface, ModelType as Model, ModelPaginatedResponse } from '@luminix/core';
 
-import { BuilderInterface } from '@luminix/core/dist/types/Builder';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 import useQuery from './useQuery';
 
-import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
 
 type Builder = BuilderInterface<Model, ModelPaginatedResponse>;
 

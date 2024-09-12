@@ -1,9 +1,12 @@
 import React from 'react';
 
-import { BuilderInterface as Builder } from '@luminix/core/dist/types/Builder';
-import { Model, ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
-import { Collection } from '@luminix/core/dist/types/Collection';
-import { collect, log } from '@luminix/core';
+import { Collection } from '@luminix/support';
+
+import {
+    BuilderInterface as Builder, ModelType as Model, ModelPaginatedResponse,
+    collect, log,
+} from '@luminix/core';
+
 import match from '../support/match';
 //import _ from 'lodash';
 

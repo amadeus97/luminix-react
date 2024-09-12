@@ -1,11 +1,10 @@
 
-import { Collection, FacadeOf, HasFacadeAccessor, JsonObject, ReducerCallback, ReducibleOf } from '@luminix/support';
+import { Client, Collection, FacadeOf, HasFacadeAccessor, JsonObject, ReducerCallback, ReducibleOf, Response } from '@luminix/support';
 
 import { ModelType as Model, HttpMethod, ModelSaveOptions, ModelType, ModelAttribute } from '@luminix/core';
 // import { ModelSaveOptions } from '@luminix/core/dist/types/Model';
 // import { HttpMethod } from '@luminix/core/dist/types/Route';
 // import { JsonObject } from '@luminix/core/dist/types/Support';
-import { AxiosResponse } from 'axios';
 
 
 export type UseFormOptions<T extends object> = {
@@ -14,7 +13,8 @@ export type UseFormOptions<T extends object> = {
     onSubmit?: (data: T) => false | void | Promise<false | void>,
     onChange?: (data: T) => void,
     onError?: (error: unknown) => void,
-    onSuccess?: (response: AxiosResponse) => void,
+    onSuccess?: (response: Response) => void,
+    tap?: (client: Client) => Client,
     transformPayload?: (payload: T) => T,
     action?: string,
     method?: HttpMethod,
@@ -39,7 +39,7 @@ export type ModelFormProps = Omit<FormProps<JsonObject>, 'initialValues' | 'acti
 };
 
 export type InteractiveFormProps = Pick<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'action' | 'method'> & {
-    ref: React.RefObject<HTMLFormElement>,
+    ref: React.MutableRefObject<HTMLFormElement | undefined>,
 };
 
 export type InteractiveInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>, 'name' | 'value' | 'onChange'>;
@@ -144,7 +144,6 @@ export type ModelInputProps<T extends keyof InputPropTypeMap> = HTMLInputProps<T
 
 export declare class FormServiceBase {
 
-    getUseFormProps<T extends object>(options: UseForm<T>): UseForm<T>;
     getFormInputComponent(type: string): React.ElementType;
     getDefaultInputsForModel(item: ModelType, confirmed?: string[]): ModelInputProps<keyof InputPropTypeMap>[];
     

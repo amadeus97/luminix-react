@@ -1,8 +1,8 @@
-import { Str } from "@luminix/support";
-import { ModelType as Model } from "@luminix/core";
-import React from "react";
+import { Str } from '@luminix/support';
+import { ModelType as Model } from '@luminix/core';
+import React from 'react';
 
-import useOn from "./useOn";
+import useOn from './useOn';
 
 
 type UseAttributesOptions = {

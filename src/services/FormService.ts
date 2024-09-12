@@ -10,14 +10,6 @@ import Text from '../components/Form/Input/Text';
 
 class RawFormService implements FormServiceBase {
     
-
-    getUseFormProps(data: object) {
-        return {
-            ...data,
-            ...this.expandUseFormProps({}, data),
-        }
-    }
-
     getFormInputComponent(type: string): React.ElementType {
         return this.replaceFormInputComponent(
             this.switchInputType(type),

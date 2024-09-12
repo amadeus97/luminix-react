@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { error } from '@luminix/core';
-import _ from 'lodash';
-
+import { Str } from '@luminix/support';
 
 export default function useErrors(bag = 'default'): Record<string, string> {
     const [errors, setErrors] = React.useState<Record<string, string>>({});
@@ -11,7 +10,7 @@ export default function useErrors(bag = 'default'): Record<string, string> {
         const off = error().bag(bag).on('change', ({ source }) => {
             setErrors(
                 Object.entries(source.all() as Record<string, string>).reduce((acc: Record<string, string>, [key, value]) => {
-                    acc[_.camelCase(key + 'Error')] = value;
+                    acc[Str.camel(key + 'Error')] = value;
                     return acc;
                 }, {})
             );
