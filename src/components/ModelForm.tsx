@@ -1,13 +1,13 @@
 import React from 'react';
-import _ from 'lodash';
-import { JsonObject } from '@luminix/core/dist/types/Support';
+
+import { JsonObject, Obj } from '@luminix/support';
+import { route } from '@luminix/core';
 
 import { ModelFormProps } from '../types/Form';
 import Form from './Form';
 import DefaultFormInputs from './ModelForm/DefaultFormInputs';
 import Input from './Form/Input';
 import ModelFormContext from '../contexts/ModelFormContext';
-import { route } from '@luminix/core';
 import useCurrentForm from '../hooks/useCurrentForm';
 import Submit from './ModelForm/Submit';
 
@@ -61,7 +61,7 @@ function ModelForm({
             const saveOptions = { 
                 additionalPayload: {
                     ...additionalPayload,
-                    ..._.pick(data, confirmed.map((key) => `${key}_confirmation`)),
+                    ...Obj.pick(data, ...confirmed.map((key) => `${key}_confirmation`)),
                 },
                 ...options,
             };

@@ -22,7 +22,7 @@ function handleError(err: unknown, errorBag: string) {
     }
 }
 
-function returnSelf<T extends object>(obj: T): T {
+function returnSelf<T>(obj: T): T {
     return obj;
 }
 
@@ -220,7 +220,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 : submit,
             action,
             method: method?.toUpperCase(),
-            ref: formRef,
+            ref: formRef as React.MutableRefObject<HTMLFormElement>,
         });
 
         return {

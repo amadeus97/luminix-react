@@ -3,7 +3,7 @@ import React from 'react';
 import { InputProps } from '../../../types/Form';
 import useCurrentForm from '../../../hooks/useCurrentForm';
 import useErrors from '../../../hooks/useErrors';
-import _ from 'lodash';
+import { Str } from '@luminix/support';
 
 
 const Checkbox: React.FC<InputProps<'checkbox'>> = (props) => {
@@ -17,7 +17,7 @@ const Checkbox: React.FC<InputProps<'checkbox'>> = (props) => {
     } = useCurrentForm();
 
     const {
-        [`${_.camelCase(props.name)}Error`]: error,
+        [`${Str.camel(props.name)}Error`]: error,
     } = useErrors(errorBag);
 
     return (

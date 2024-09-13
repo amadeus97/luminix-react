@@ -1,10 +1,10 @@
 
 import React from 'react';
+import { Str } from '@luminix/support';
+
 import { InputProps } from '../../../types/Form';
 import useCurrentForm from '../../../hooks/useCurrentForm';
 import useErrors from '../../../hooks/useErrors';
-import _ from 'lodash';
-
 
 const Radio: React.FC<InputProps<'radio'>> = (props) => {
 
@@ -17,7 +17,7 @@ const Radio: React.FC<InputProps<'radio'>> = (props) => {
     } = useCurrentForm();
 
     const {
-        [`${_.camelCase(props.name)}Error`]: error,
+        [`${Str.camel(props.name)}Error`]: error,
     } = useErrors(errorBag);
 
     return (

@@ -2,11 +2,9 @@
 import React from 'react';
 
 import useModelFormItem from '../../hooks/useModelFormItem';
-import { app } from '@luminix/core';
 import Input from '../Form/Input';
 
-
-import { InputProps } from '../../types/Form';
+import Forms from '../../facades/Forms';
 
 
 function DefaultFormInputs({ confirmed = [] }: { confirmed?: string[] }): React.ReactNode {
@@ -15,7 +13,7 @@ function DefaultFormInputs({ confirmed = [] }: { confirmed?: string[] }): React.
 
     return React.useMemo(() => {
 
-        const inputProps: (InputProps<string>|null)[] = app('forms').getDefaultInputsForModel(item, confirmed);
+        const inputProps = Forms.getDefaultInputsForModel(item, confirmed);
 
         return inputProps.map((props) => props && <Input key={props.name} {...props} />);
     // eslint-disable-next-line react-hooks/exhaustive-deps

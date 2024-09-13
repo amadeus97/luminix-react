@@ -1,6 +1,7 @@
 import React from 'react';
 import { GridLoader } from 'react-spinners';
 
+import logo from '../assets/logo.png';
 
 const Fallback: React.FunctionComponent = () => {
 
@@ -17,7 +18,7 @@ const Fallback: React.FunctionComponent = () => {
             className="test"
         >
             <img 
-                src="https://avatars.githubusercontent.com/u/158327540?s=100&v=4" 
+                src={logo}
                 alt="Luminix"
             />
             <GridLoader color="#1d9798" />

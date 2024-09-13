@@ -1,9 +1,10 @@
 
 import React from 'react';
+import { Str } from '@luminix/support';
+
 import { InputProps } from '../../../types/Form';
 import useCurrentForm from '../../../hooks/useCurrentForm';
 import useErrors from '../../../hooks/useErrors';
-import _ from 'lodash';
 
 
 const Textarea: React.FC<InputProps<'textarea'>> = (props) => {
@@ -18,7 +19,7 @@ const Textarea: React.FC<InputProps<'textarea'>> = (props) => {
     } = useCurrentForm();
 
     const {
-        [`${_.camelCase(props.name)}Error`]: error,
+        [`${Str.camel(props.name)}Error`]: error,
     } = useErrors(errorBag);
 
     return (

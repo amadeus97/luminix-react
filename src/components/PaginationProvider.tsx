@@ -1,11 +1,10 @@
 import React from 'react';
+import { ModelType as Model, BuilderInterface, ModelPaginatedResponse } from '@luminix/core';
 
 import useBrowsableQuery from '../hooks/useBrowsableQuery';
 
 import PaginationContext from '../contexts/PaginationContext';
-import { Model } from '@luminix/core';
-import { BuilderInterface } from '@luminix/core/dist/types/Builder';
-import { ModelPaginatedResponse } from '@luminix/core/dist/types/Model';
+
 
 export type PaginationProviderProps = {
     factory: () => BuilderInterface<Model, ModelPaginatedResponse>,

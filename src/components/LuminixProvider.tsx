@@ -1,17 +1,14 @@
 import React from 'react';
 
 import { ServiceProvider, ApplicationEvents } from '@luminix/support';
-import {
-    App, AppFacade, AppConfiguration,
-    Route
-} from '@luminix/core';
+import { App, AppFacade, AppConfiguration, Route } from '@luminix/core';
 
 
 import Fallback from './Fallback';
 
 import { RouteObject, RouterProvider, RouterProviderProps, createBrowserRouter } from 'react-router-dom';
 import LuminixContext, { LuminixContextState, luminixInitialState } from '../contexts/LuminixContext';
-//import ReactPlugin from '../ReactPlugin';
+import ReactServiceProvider from '../ReactServiceProvider';
 
 interface DOMRouterOpts {
     basename?: string;
@@ -50,7 +47,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
     React.useEffect(() => {
 
         const app = App.withProviders([
-            // ReactServiceProvider,
+            ReactServiceProvider,
             ...providers,
         ]);
 

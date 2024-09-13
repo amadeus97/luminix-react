@@ -12,6 +12,7 @@ export default defineConfig({
     react(),
     dts({
       insertTypesEntry: true,
+      outDir: 'types',
     }),
   ],
   build: {
@@ -20,7 +21,10 @@ export default defineConfig({
         formats: ['es'],
     },
     rollupOptions: {
-      external: Object.keys(packageJson.peerDependencies),
+      external: [
+        ...Object.keys(packageJson.peerDependencies),
+        'react/jsx-runtime',
+      ],
     }
   }
 });

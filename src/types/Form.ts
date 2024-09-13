@@ -39,7 +39,7 @@ export type ModelFormProps = Omit<FormProps<JsonObject>, 'initialValues' | 'acti
 };
 
 export type InteractiveFormProps = Pick<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'action' | 'method'> & {
-    ref: React.MutableRefObject<HTMLFormElement | undefined>,
+    ref: React.MutableRefObject<HTMLFormElement>,
 };
 
 export type InteractiveInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>, 'name' | 'value' | 'onChange'>;
@@ -145,7 +145,7 @@ export type ModelInputProps<T extends keyof InputPropTypeMap> = HTMLInputProps<T
 export declare class FormServiceBase {
 
     getFormInputComponent(type: string): React.ElementType;
-    getDefaultInputsForModel(item: ModelType, confirmed?: string[]): ModelInputProps<keyof InputPropTypeMap>[];
+    getDefaultInputsForModel(item: ModelType, confirmed?: string[]): InputProps<keyof InputPropTypeMap>[];
     
 
 }
