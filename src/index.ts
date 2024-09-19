@@ -42,3 +42,7 @@ export {
 
     ReactServiceProvider as ReactPlugin,
 };
+
+export type {
+    LuminixProviderProps,
+} from './components/LuminixProvider';
