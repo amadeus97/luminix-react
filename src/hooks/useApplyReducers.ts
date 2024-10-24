@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     ReducibleInterface, Collection, ReducerCallback,
-    produce, isDraftable,
+    immer,
 } from '@luminix/support';
 import useCollection from './useCollection';
 
@@ -34,8 +34,8 @@ export default function useApplyReducers<TReducers extends Record<string, Reduce
     const reducers = useCollection(reducible.getReducer(name), transform);
 
     const result = React.useMemo(() => {
-        if (isDraftable(value)) {
-            return produce(value, (draft: unknown) => {
+        if (immer.isDraftable(value)) {
+            return immer.produce(value, (draft: unknown) => {
                 return reducers.reduce((acc, reducer) => {
                     return reducer(acc, ...params);
                 }, draft);

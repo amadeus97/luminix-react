@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { produce, Func, Obj, DateTime, Response, isValidationError } from '@luminix/support';
+import { immer, Func, Obj, DateTime, Response, isValidationError } from '@luminix/support';
 import { error, Http, log } from '@luminix/core';
 
 import { UseForm, UseFormOptions } from '../types/Form';
@@ -108,7 +108,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             setData((data) => {
                 const newData = path === '.'
                     ? value as T
-                    : produce(data, (draft) => {
+                    : immer.produce(data, (draft) => {
                         Obj.set(draft, path, value);
                     });
     
