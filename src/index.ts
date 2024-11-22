@@ -5,6 +5,8 @@ import Form from './components/Form';
 import ModelForm from './components/ModelForm';
 import ReactServiceProvider from './ReactServiceProvider';
 
+import Forms from './facades/Forms';
+
 import useAddReducer from './hooks/useAddReducer';
 import useRequest from './hooks/useRequest';
 import useApplyReducers from './hooks/useApplyReducers';
@@ -38,6 +40,7 @@ export {
     PaginationProvider,
     Fallback,
     Form,
+    Forms,
     ModelForm,
 
     ReactServiceProvider as ReactPlugin,
@@ -46,3 +49,7 @@ export {
 export type {
     LuminixProviderProps,
 } from './components/LuminixProvider';
+
+export type {
+    ModelFormProps, InputProps, FormProps,
+} from './types/Form';

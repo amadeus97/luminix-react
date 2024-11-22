@@ -86,7 +86,7 @@ class RawFormService implements FormServiceBase {
                 return {
                     name: key,
                     type: castTypeMap[attribute.cast],
-                    label: Str.readable(key),
+                    label: Str.human(key),
                     id,
                 };
             }
@@ -107,7 +107,7 @@ class RawFormService implements FormServiceBase {
                 return {
                     name: key,
                     type: typeMap[attribute.type],
-                    label: Str.readable(key),
+                    label: Str.human(key),
                     id,
                 };
             }
@@ -119,13 +119,13 @@ class RawFormService implements FormServiceBase {
                     return {
                         name: key,
                         type: 'select',
-                        label: Str.readable(key),
+                        label: Str.human(key),
                         id,
                         options: [
                             { label: '-- Select a value --', value: '' },
                             ...match[1].split(',').map((opt) => {
                                 const unquoted = opt.replace(/['"]+/g, '');
-                                return { label: Str.readable(unquoted.trim()), value: unquoted.trim() };
+                                return { label: Str.human(unquoted.trim()), value: unquoted.trim() };
                             })
                         ],
                     };
@@ -135,7 +135,7 @@ class RawFormService implements FormServiceBase {
             return {
                 name: key,
                 type: 'text',
-                label: Str.readable(key),
+                label: Str.human(key),
                 id,
             };
         })(key);
