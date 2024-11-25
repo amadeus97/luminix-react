@@ -91,7 +91,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
         app.create();
 
         return () => {
-            app.flush();
+            app.down();
             setState(luminixInitialState);
         }
 
