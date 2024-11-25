@@ -90,12 +90,9 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
 
         app.create();
 
-        return () => {
-            app.down();
-            setState(luminixInitialState);
-        }
-
-    }, [config, onBooted, onBooting, onFlushed, onFlushing, onInit, onReady, providers, routes]);
+    // This effect should only run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <LuminixContext.Provider value={state}>
