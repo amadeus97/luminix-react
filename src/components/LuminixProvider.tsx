@@ -90,6 +90,10 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
 
         app.create();
 
+        return () => {
+            app.down();
+        };
+
     // This effect should only run once
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
