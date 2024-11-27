@@ -34,9 +34,8 @@ export type LuminixProviderProps = Omit<RouterProviderProps, "router"> & {
     fallbackElement?: React.ReactElement,
 };
 
-
 const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
-    routes, config = {}, providers = [],
+    routes, config, providers,
     onInit, onBooting, onBooted, onFlushing,
     onFlushed, onReady, fallbackElement = <Fallback />,
     ...props
@@ -48,7 +47,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
 
         const app = App.withProviders([
             ReactServiceProvider,
-            ...providers,
+            ...(providers || []),
         ]);
 
         if (config) {
@@ -93,10 +92,7 @@ const LuminixProvider: React.FunctionComponent<LuminixProviderProps> = ({
         return () => {
             app.down();
         };
-
-    // This effect should only run once
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [config, onBooted, onBooting, onFlushed, onFlushing, onInit, onReady, providers, routes]);
 
     return (
         <LuminixContext.Provider value={state}>
