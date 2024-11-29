@@ -70,7 +70,6 @@ export default function useQuery(query: BuilderInterface|null, options: UseQuery
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         query[method](...params as [any, any])
             .then((response) => {
- 
                 const data = match(method, {
                     get: () => (response as ModelPaginatedResponse).data,
                     all: () => response as Collection<Model>,
@@ -93,7 +92,12 @@ export default function useQuery(query: BuilderInterface|null, options: UseQuery
                 log().error(error);
             });
 
-
+        return () => {
+            setState({
+                loading: true,
+                error: null,
+            });
+        }
     }, [query, page, replaceLinksWith, method, id]);
 
     React.useEffect(refresh, [refresh]);
