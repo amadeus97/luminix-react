@@ -51,5 +51,5 @@ export type {
 } from './components/LuminixProvider';
 
 export type {
-    ModelFormProps, InputProps, FormProps,
+    ModelFormProps, InputProps, FormProps, InputPropTypeMap,
 } from './types/Form';

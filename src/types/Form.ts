@@ -93,37 +93,37 @@ type SanitizableInput<T = any, R = any> = {
 }
 
 
-export type InputPropTypeMap = {
+export declare class InputPropTypeMap {
     
-    checkbox: React.InputHTMLAttributes<HTMLInputElement>,
-    color: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    date: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    ['datetime-local']: React.InputHTMLAttributes<HTMLInputElement>,
-    email: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    file: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    hidden: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    image: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    month: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    number: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    password: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
+    checkbox: React.InputHTMLAttributes<HTMLInputElement>;
+    color: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    date: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    ['datetime-local']: React.InputHTMLAttributes<HTMLInputElement>;
+    email: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    file: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    hidden: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    image: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    month: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    number: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    password: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
     radio: React.InputHTMLAttributes<HTMLInputElement> & {
         options: { value: string, label: string }[],
-    },
-    range: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    search: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
+    };
+    range: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    search: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
     select: Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'children'> & {
         options: { value: string, label: string }[],
-    },
-    tel: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    text: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    textarea: Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children'> & SanitizableInput<React.ChangeEvent<HTMLTextAreaElement>>,
-    time: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    url: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
-    week: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>,
+    };
+    tel: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    text: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    textarea: Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'children'> & SanitizableInput<React.ChangeEvent<HTMLTextAreaElement>>;
+    time: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    url: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
+    week: React.InputHTMLAttributes<HTMLInputElement> & SanitizableInput<React.ChangeEvent<HTMLInputElement>>;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
-};
+}
 
 
 
