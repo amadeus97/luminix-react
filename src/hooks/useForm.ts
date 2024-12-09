@@ -105,6 +105,12 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     React.useEffect(() => {
         debouncedAutoSave(data);
     }, [debouncedAutoSave, data]);
+
+    React.useEffect(() => {
+        if (debug) {
+            log().debug(`Form middleware stack resized to ${middlewares.count()}:`, [...middlewares]);
+        }
+    }, [debug, middlewares]);
     
     return React.useMemo(() => {
 
