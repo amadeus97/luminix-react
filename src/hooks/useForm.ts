@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { immer, Func, Obj, DateTime, Response, isValidationError } from '@luminix/support';
-import { error, Http, log } from '@luminix/core';
+import { immer, Func, Obj, DateTime, Response, isValidationError, Client } from '@luminix/support';
+import { collect, error, Http, log } from '@luminix/core';
 
 import { UseForm, UseFormOptions } from '../types/Form';
 import Forms from '../facades/Forms';
+import useCollection from './useCollection';
 
 
 
@@ -80,6 +81,9 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     } = options;
 
     const formRef = React.useRef<HTMLFormElement>();
+
+    const middlewareStorage = React.useRef(collect<(client: Client) => Client>([]));
+    const middlewares = useCollection(middlewareStorage.current);
 
     const [data, setData] = React.useState(initialValues);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -192,8 +196,10 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 }
     
                 if (false !== submitted && action) {
+                    const client = middlewares.reduce((client, middleware) => middleware(client!), Http.getClient());
+
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const response: Response = await (tap(Http.getClient()) as any)[method ?? 'get'](action, transformPayload(data));
+                    const response: Response = await (tap(client!) as any)[method ?? 'get'](action, transformPayload(data));
 
                     if (response.successful() && onSuccess) {
                         onSuccess(response);
@@ -223,6 +229,16 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             ref: formRef as React.MutableRefObject<HTMLFormElement>,
         });
 
+        const subscribe = (middleware: (client: Client) => Client) => {
+            middlewareStorage.current.push(middleware);
+            return () => {
+                const index = middlewares.search(middleware);
+                if (typeof index === 'number') {
+                    middlewareStorage.current.forget(index);
+                }
+            };
+        };
+
         return {
             data,
             setProp,
@@ -233,6 +249,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             checkboxProps,
             radioProps,
             datetimeLocalProps,
+            subscribe,
             isSubmitting,
             form: formRef.current,
             errorBag,
@@ -241,7 +258,7 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     }, [
         data, onChange, isSubmitting, onSubmit, action, method, debug,
         transformPayload, onSuccess, errorBag, onError, preventDefault,
-        tap,
+        tap, middlewares,
     ]);
 
 }

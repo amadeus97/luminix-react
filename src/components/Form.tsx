@@ -10,7 +10,7 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
     const {
         initialValues, onSubmit, onChange, onError, onSuccess,
         action, transformPayload, preventDefault = true, errorBag,
-        method, children, autoSave, debounce, debug, className,
+        method, children, autoSave, debounce, debug, className, tap,
         ...rest
     } = props;
 
@@ -28,6 +28,7 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
         autoSave,
         debounce,
         debug,
+        tap,
     });
 
     const {

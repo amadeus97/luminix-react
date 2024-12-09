@@ -71,6 +71,8 @@ export type UseForm<T extends object> = {
     selectProps: (name: string) => InteractiveSelectProps,
     /** A function that returns the props for a datetime-local input. */
     datetimeLocalProps: (name: string) => InteractiveInputProps,
+    /** A function to subscribe a middleware to the form submission. */
+    subscribe: (middleware: (client: Client) => Client) => () => void,
 
     /** Whether the form is currently submitting. */
     isSubmitting: boolean,
