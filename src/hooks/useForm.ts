@@ -111,8 +111,18 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             log().debug(`Form middleware stack resized to ${middlewares.count()}:`, [...middlewares]);
         }
     }, [debug, middlewares]);
+
+    const subscribe = React.useCallback((middleware: (client: Client) => Client) => {
+        middlewareStorage.current.push(middleware);
+        return () => {
+            const index = middlewareStorage.current.search(middleware);
+            if (typeof index === 'number') {
+                middlewareStorage.current.forget(index);
+            }
+        };
+    }, []);
     
-    return React.useMemo(() => {
+    const form = React.useMemo(() => {
 
         const setProp = (path: string, value: unknown) => {
             setData((data) => {
@@ -235,16 +245,6 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             ref: formRef as React.MutableRefObject<HTMLFormElement>,
         });
 
-        const subscribe = (middleware: (client: Client) => Client) => {
-            middlewareStorage.current.push(middleware);
-            return () => {
-                const index = middlewares.search(middleware);
-                if (typeof index === 'number') {
-                    middlewareStorage.current.forget(index);
-                }
-            };
-        };
-
         return {
             data,
             setProp,
@@ -255,7 +255,6 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
             checkboxProps,
             radioProps,
             datetimeLocalProps,
-            subscribe,
             isSubmitting,
             form: formRef.current,
             errorBag,
@@ -266,6 +265,11 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
         transformPayload, onSuccess, errorBag, onError, preventDefault,
         tap, middlewares,
     ]);
+
+    return {
+        ...form,
+        subscribe,
+    };
 
 }
 
