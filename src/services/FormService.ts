@@ -1,11 +1,14 @@
 import { Reducible, Str, ReducerCallback, Collection } from '@luminix/support';
 import { collect, Model, ModelAttribute, ModelType } from '@luminix/core';
+
 import { FormServiceBase, FormServiceInterface, InputPropTypeMap } from '../types/Form';
-import Select from '../components/Form/Input/Select';
-import Radio from '../components/Form/Input/Radio';
+
 import Checkbox from '../components/Form/Input/Checkbox';
-import Textarea from '../components/Form/Input/Textarea';
 import DatetimeLocal from '../components/Form/Input/DatetimeLocal';
+import File from '../components/Form/Input/File';
+import Radio from '../components/Form/Input/Radio';
+import Select from '../components/Form/Input/Select';
+import Textarea from '../components/Form/Input/Textarea';
 import Text from '../components/Form/Input/Text';
 
 class RawFormService implements FormServiceBase {
@@ -34,28 +37,15 @@ class RawFormService implements FormServiceBase {
     
 
     private switchInputType(type: keyof InputPropTypeMap) {
-
-        if (type === 'select') {
-            return Select;
-        }
-
-        if (type === 'radio') {
-            return Radio;
-        }
-
-        if (type === 'checkbox') {
-            return Checkbox;
-        }
-
-        if (type === 'textarea') {
-            return Textarea;
-        }
-
-        if (type === 'datetime-local') {
-            return DatetimeLocal;
-        }
-
-        return Text;
+        return {
+            select: Select,
+            radio: Radio,
+            checkbox: Checkbox,
+            textarea: Textarea,
+            'datetime-local': DatetimeLocal,
+            file: File,
+            text: Text,
+        }[type] || Text;
     }
 
 

@@ -8,7 +8,7 @@ import useErrors from '../../../hooks/useErrors';
 
 
 
-const Text: React.FC<InputProps<'text'>> = (props) => {
+const Text: React.FC<InputProps<'text' | 'file' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search' | 'color' >> = (props) => {
 
     const {
         label, sanitize, className, ...rest

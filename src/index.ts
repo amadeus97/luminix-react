@@ -43,7 +43,7 @@ export {
     Forms,
     ModelForm,
 
-    ReactServiceProvider as ReactPlugin,
+    ReactServiceProvider,
 };
 
 export type {
