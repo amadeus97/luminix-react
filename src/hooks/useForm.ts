@@ -183,14 +183,38 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 setProp(name, e.target.value);
             },
         });
-    
-        const checkboxProps = (name: string) => ({
-            name,
-            checked: !!Obj.get(data, name),
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                setProp(name, e.target.checked);
-            },
-        });
+
+        const checkboxProps = (name: string, value?: string | number | readonly string[]) => {
+            const isArraySelection = typeof value !== 'undefined' && name.endsWith('[]');
+            const attribute = isArraySelection
+                ? name.replace(/\[\]$/, '')
+                : name;
+            const selection = isArraySelection
+                ? Obj.get(data, attribute, [])
+                : Obj.get(data, attribute);
+
+            return {
+                name,
+                checked: isArraySelection
+                    ? selection.includes(value)
+                    : !!selection,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+
+                    if (isArraySelection) {
+                        if (e.target.checked) {
+                            setProp(attribute, [...selection, value].flat());
+                        } else {
+                            setProp(attribute, selection.filter((v: string) => v !== value));
+                        }
+                        return;
+                    }
+
+                    setProp(attribute, e.target.checked);
+                    
+                },
+                value,
+            };
+        };
 
         const radioProps = (name: string, value: string) => ({
             name,

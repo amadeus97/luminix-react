@@ -25,7 +25,7 @@ const Checkbox: React.FC<InputProps<'checkbox'>> = (props) => {
             <p>
                 <input
                     className={`luminix-form-input luminix-form-checkbox-input ${className ?? ''}`.trim()}
-                    {...checkboxProps(props.name)}
+                    {...checkboxProps(props.name, props.value)}
                     {...rest}
                 />
                 {label && (

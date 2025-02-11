@@ -62,7 +62,7 @@ export type UseForm<T extends object> = {
     /** A function that returns the props for an input or select. */
     inputProps: (name: string, sanitizeFn?: (event: React.ChangeEvent<HTMLInputElement>) => string) => InteractiveInputProps,
     /** A function that returns the props for a checkbox. */
-    checkboxProps: (name: string) => InteractiveCheckboxProps,
+    checkboxProps: (name: string, value?: string | number | readonly string[]) => InteractiveCheckboxProps,
     /** A function that returns the props for a radio. */
     radioProps: (name: string, value: string) => InteractiveRadioProps,
     /** A function that returns the props for a textarea. */
