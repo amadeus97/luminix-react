@@ -23,7 +23,6 @@ class ReactServiceProvider extends ServiceProvider {
     boot(): void {
 
         this.registerUrlParamReplacementForReactRouter();
-
     }
 
     private registerUrlParamReplacementForReactRouter() {
@@ -35,6 +34,9 @@ class ReactServiceProvider extends ServiceProvider {
             return `/${url.replace(regex, ':$1')}`;
         });
     }
+
+
+
 
 }
 

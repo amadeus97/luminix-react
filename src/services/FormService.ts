@@ -1,4 +1,4 @@
-import { Reducible, Str, ReducerCallback, Collection } from '@luminix/support';
+import { Reducible, Str, Collection } from '@luminix/support';
 import { collect, Model, ModelAttribute, ModelType } from '@luminix/core';
 
 import { FormServiceBase, FormServiceInterface, InputPropTypeMap } from '../types/Form';
@@ -10,11 +10,14 @@ import Radio from '../components/Form/Input/Radio';
 import Select from '../components/Form/Input/Select';
 import Textarea from '../components/Form/Input/Textarea';
 import Text from '../components/Form/Input/Text';
+import Csrf from '../components/Form/Input/Csrf';
 
 class RawFormService implements FormServiceBase {
+
+    private includesCsrfToken = false;
     
     getFormInputComponent(type: string): React.ElementType {
-        return this.replaceFormInputComponent(
+        return this.thisAny().replaceFormInputComponent(
             this.switchInputType(type),
             type
         );
@@ -25,16 +28,29 @@ class RawFormService implements FormServiceBase {
         const attributes = collect(Model.schema(modelType).attributes);
 
         const basePropsArray = item.fillable.flatMap((key) => {
-            return this.getDefaultInputProps(
+            return this.thisAny().getDefaultInputProps(
                 this.makeFormAttributesFor(key, { attributes, confirmed, item }),
                 { attributes, confirmed, item }
             );
         });
 
-        return this[`selectDefaultInputsFor${Str.studly(modelType)}`](basePropsArray, item);
+        if (this.includesCsrfToken) {
+            basePropsArray.unshift({
+                type: 'csrf',
+            });
+        }
+
+        return this.thisAny()[`selectDefaultInputsFor${Str.studly(modelType)}`](basePropsArray, item);
     }
 
-    
+    ensureFrontendRequestsAreStateful() {
+        this.includesCsrfToken = true;
+    }
+
+    private thisAny() {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return this as any;
+    }
 
     private switchInputType(type: keyof InputPropTypeMap) {
         return {
@@ -45,6 +61,7 @@ class RawFormService implements FormServiceBase {
             'datetime-local': DatetimeLocal,
             file: File,
             text: Text,
+            csrf: Csrf,
         }[type] || Text;
     }
 
@@ -62,7 +79,7 @@ class RawFormService implements FormServiceBase {
                 return null;
             }
 
-            const castTypeMap: Record<string, string> = this.mapAttributeCastToInputTypes({
+            const castTypeMap: Record<string, string> = this.thisAny().mapAttributeCastToInputTypes({
                 date: 'date',
                 datetime: 'datetime-local',
                 timestamp: 'datetime-local',
@@ -81,7 +98,7 @@ class RawFormService implements FormServiceBase {
                 };
             }
 
-            const typeMap: Record<string, string> = this.mapAttributeTypeToInputTypes({
+            const typeMap: Record<string, string> = this.thisAny().mapAttributeTypeToInputTypes({
                 'tinyint(1)': 'checkbox',
                 int: 'number',
                 float: 'number',
@@ -145,7 +162,7 @@ class RawFormService implements FormServiceBase {
         return baseProps;
     }
 
-    [reducer: string]: ReducerCallback;
+    // [reducer: string]: ReducerCallback;
 
 }
 
