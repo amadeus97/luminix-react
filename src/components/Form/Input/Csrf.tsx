@@ -27,6 +27,7 @@ const Csrf: React.FC<InputProps<'hidden'>> = (props) => {
             {...rest}
             value={csrf?.content}
             name="_token"
+            type="hidden"
         />
     );
 };
