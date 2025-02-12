@@ -148,7 +148,7 @@ export declare class FormServiceBase {
 
     getFormInputComponent(type: string): React.ElementType;
     getDefaultInputsForModel(item: ModelType, confirmed?: string[]): InputProps<keyof InputPropTypeMap>[];
-    
+    ensureFrontendRequestsAreStateful(): void;
 
 }
 
