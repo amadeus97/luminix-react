@@ -185,13 +185,13 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
         });
 
         const checkboxProps = (name: string, value?: string | number | readonly string[]) => {
-            const isArraySelection = typeof value !== 'undefined' && name.endsWith('[]');
-            const attribute = isArraySelection
-                ? name.replace(/\[\]$/, '')
-                : name;
-            const selection = isArraySelection
-                ? Obj.get(data, attribute, [])
-                : Obj.get(data, attribute);
+            const isArraySelection = typeof value !== 'undefined' && name.endsWith('[]'),
+                attribute = isArraySelection
+                    ? name.replace(/\[\]$/, '')
+                    : name,
+                selection = isArraySelection
+                    ? Obj.get(data, attribute, []) ?? []
+                    : Obj.get(data, attribute);
 
             return {
                 name,
