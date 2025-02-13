@@ -30,7 +30,7 @@ class RawFormService implements FormServiceBase {
         const basePropsArray = item.fillable.flatMap((key) => {
             return this.thisAny().getDefaultInputProps(
                 this.makeFormAttributesFor(key, { attributes, confirmed, item }),
-                { attributes, confirmed, item }
+                { attributes, confirmed, item, key }
             );
         });
 

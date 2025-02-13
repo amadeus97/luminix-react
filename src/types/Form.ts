@@ -164,8 +164,9 @@ export type FormServicesReducers = {
             attributes: Collection<ModelAttribute>,
             confirmed: string[],
             item: ModelType,
+            key: string,
         }
-    ): ModelInputProps<keyof InputPropTypeMap>[];
+    ): ModelInputProps<keyof InputPropTypeMap> | ModelInputProps<keyof InputPropTypeMap>[];
 
     mapAttributeCastToInputTypes(
         map: Record<string, keyof InputPropTypeMap>,
