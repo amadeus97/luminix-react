@@ -85,6 +85,10 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     const middlewareStorage = React.useRef(collect<(client: Client) => Client>([]));
     const middlewares = useCollection(middlewareStorage.current);
 
+    const applyMiddlewares = React.useCallback((baseClient: Client) => {
+        return middlewares.reduce((client, middleware) => middleware(client!), baseClient)!;
+    }, [middlewares]);
+
     const [data, setData] = React.useState(initialValues);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -236,7 +240,8 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
                 }
     
                 if (false !== submitted && action) {
-                    const client = middlewares.reduce((client, middleware) => middleware(client!), Http.getClient());
+                    const client = applyMiddlewares(Http.getClient());
+                    //middlewares.reduce((client, middleware) => middleware(client!), Http.getClient());
 
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const response: Response = await (tap(client!) as any)[method ?? 'get'](action, transformPayload(data));
@@ -287,12 +292,13 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     }, [
         data, onChange, isSubmitting, onSubmit, action, method, debug,
         transformPayload, onSuccess, errorBag, onError, preventDefault,
-        tap, middlewares,
+        tap, applyMiddlewares
     ]);
 
     return {
         ...form,
         subscribe,
+        applyMiddlewares,
     };
 
 }

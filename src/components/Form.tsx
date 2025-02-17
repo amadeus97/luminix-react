@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useImperativeHandle } from 'react';
 import { FormProps } from '../types/Form';
 import useForm from '../hooks/useForm';
 import FormContext from '../contexts/FormContext';
@@ -30,6 +30,10 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
         debug,
         tap,
     });
+
+    useImperativeHandle(props.ref, () => ({
+        applyMiddlewares: form.applyMiddlewares,
+    }), [form.applyMiddlewares]);
 
     const {
         data, ...formRest

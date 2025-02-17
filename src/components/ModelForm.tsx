@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { JsonObject, Obj } from '@luminix/support';
+import { Client, JsonObject, Obj } from '@luminix/support';
 import { route } from '@luminix/core';
 
 import { ModelFormProps } from '../types/Form';
@@ -45,6 +45,10 @@ function ModelForm({
     const saveRoute = item.getRouteForSave();
     const confirmed = React.useMemo(() => typeof confirmedProp === 'string' ? [confirmedProp] : confirmedProp, [confirmedProp]);
 
+    const formRef = React.useRef<{ applyMiddlewares: (client: Client) => Client; }>({
+        applyMiddlewares: (client) => client
+    });
+
     const handleSubmit: (data: JsonObject) => Promise<false> = React.useCallback(async (data) => {
         let shouldSubmit: boolean | void = true;
 
@@ -66,7 +70,7 @@ function ModelForm({
                 ...options,
             };
 
-            item.save(saveOptions)
+            item.save(saveOptions, formRef.current.applyMiddlewares)
                 .then((response) => {
                     if (onSuccess && response) {
                         onSuccess(response);
@@ -82,6 +86,7 @@ function ModelForm({
     return (
         <ModelFormContext.Provider value={{ item }}>
             <Form
+                ref={formRef}
                 initialValues={item.toJson()}
                 onSubmit={handleSubmit}
                 action={route().url(saveRoute)}

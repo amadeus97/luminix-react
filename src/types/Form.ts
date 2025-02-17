@@ -26,6 +26,9 @@ export type UseFormOptions<T extends object> = {
 
 export type FormProps<T extends object> = Omit<React.HTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange' | 'onError' | 'action' | 'method' | 'children'> & UseFormOptions<T> & {
     children?: ((data: T, form: Omit<UseForm<T>, 'data'>) => React.ReactNode) | React.ReactNode,
+    ref?: React.MutableRefObject<{
+        applyMiddlewares: (client: Client) => Client,
+    }>,
 };
 
 
@@ -73,6 +76,8 @@ export type UseForm<T extends object> = {
     datetimeLocalProps: (name: string) => InteractiveInputProps,
     /** A function to subscribe a middleware to the form submission. */
     subscribe: (middleware: (client: Client) => Client) => () => void,
+    /** A function to apply all the subscribed middlewares to the given client. */
+    applyMiddlewares: (client: Client) => Client,
 
     /** Whether the form is currently submitting. */
     isSubmitting: boolean,
