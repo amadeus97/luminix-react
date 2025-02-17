@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Client, JsonObject, Obj } from '@luminix/support';
+import { JsonObject, Obj } from '@luminix/support';
 import { route } from '@luminix/core';
 
 import { ModelFormProps } from '../types/Form';
-import Form from './Form';
+import Form, { FormImperativeHandle } from './Form';
 import DefaultFormInputs from './ModelForm/DefaultFormInputs';
 import Input from './Form/Input';
 import ModelFormContext from '../contexts/ModelFormContext';
@@ -45,7 +45,7 @@ function ModelForm({
     const saveRoute = item.getRouteForSave();
     const confirmed = React.useMemo(() => typeof confirmedProp === 'string' ? [confirmedProp] : confirmedProp, [confirmedProp]);
 
-    const formRef = React.useRef<{ applyMiddlewares: (client: Client) => Client; }>({
+    const formRef = React.useRef<FormImperativeHandle>({
         applyMiddlewares: (client) => client
     });
 

@@ -1,12 +1,22 @@
-import React, { useImperativeHandle } from 'react';
+import React, { ForwardedRef, ReactNode } from 'react';
 import { FormProps } from '../types/Form';
 import useForm from '../hooks/useForm';
 import FormContext from '../contexts/FormContext';
 import Input from './Form/Input';
+import { Client } from '@luminix/support';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Form<T extends object>(props: FormProps<T>): React.ReactNode {
 
+export interface FormImperativeHandle {
+    applyMiddlewares: (client: Client) => Client;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface FormComponent extends React.ForwardRefExoticComponent<FormProps<any> & React.RefAttributes<FormImperativeHandle>> {
+    Input: typeof Input;
+}
+
+function Form<T extends object>(props: FormProps<T>, ref: ForwardedRef<FormImperativeHandle>): ReactNode {
     const {
         initialValues, onSubmit, onChange, onError, onSuccess,
         action, transformPayload, preventDefault = true, errorBag,
@@ -31,7 +41,7 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
         tap,
     });
 
-    useImperativeHandle(props.ref, () => ({
+    React.useImperativeHandle(ref, () => ({
         applyMiddlewares: form.applyMiddlewares,
     }), [form.applyMiddlewares]);
 
@@ -56,4 +66,4 @@ function Form<T extends object>(props: FormProps<T>): React.ReactNode {
 
 Form.Input = Input;
 
-export default Form;
+export default React.forwardRef(Form) as FormComponent;
