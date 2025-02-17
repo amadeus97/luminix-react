@@ -5,9 +5,6 @@ import { collect, error, Http, log } from '@luminix/core';
 
 import { UseForm, UseFormOptions } from '../types/Form';
 import Forms from '../facades/Forms';
-import useCollection from './useCollection';
-
-
 
 function handleError(err: unknown, errorBag: string) {
     if (
@@ -83,7 +80,13 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     const formRef = React.useRef<HTMLFormElement>();
 
     const middlewareStorage = React.useRef(collect<(client: Client) => Client>([]));
-    const middlewares = useCollection(middlewareStorage.current);
+    const [middlewares, setMiddlewares] = React.useState(middlewareStorage.current.collect());
+
+    React.useEffect(() => {
+        return middlewareStorage.current.on('change', (e) => {
+            setMiddlewares(collect(e.items));
+        });
+    }, []);
 
     const applyMiddlewares = React.useCallback((baseClient: Client) => {
         return middlewares.reduce((client, middleware) => middleware(client!), baseClient)!;
