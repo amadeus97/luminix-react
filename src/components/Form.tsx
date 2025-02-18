@@ -16,7 +16,7 @@ interface FormComponent extends React.ForwardRefExoticComponent<FormProps<any> &
     Input: typeof Input;
 }
 
-function Form<T extends object>(props: FormProps<T>, ref: ForwardedRef<FormImperativeHandle>): ReactNode {
+function FormComponent<T extends object>(props: FormProps<T>, ref: ForwardedRef<FormImperativeHandle>): ReactNode {
     const {
         initialValues, onSubmit, onChange, onError, onSuccess,
         action, transformPayload, preventDefault = true, errorBag,
@@ -64,6 +64,8 @@ function Form<T extends object>(props: FormProps<T>, ref: ForwardedRef<FormImper
     );
 }
 
+const Form = React.forwardRef(FormComponent) as FormComponent;
+
 Form.Input = Input;
 
-export default React.forwardRef(Form) as FormComponent;
+export default Form;
