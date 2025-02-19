@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { immer, Func, Obj, DateTime, Response, isValidationError, Client } from '@luminix/support';
-import { collect, error, Http, log } from '@luminix/core';
+import { error, Http, log } from '@luminix/core';
 
 import { UseForm, UseFormOptions } from '../types/Form';
 import Forms from '../facades/Forms';
@@ -79,18 +79,30 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
 
     const formRef = React.useRef<HTMLFormElement>();
 
-    const middlewareStorage = React.useRef(collect<(client: Client) => Client>([]));
-    const [middlewares, setMiddlewares] = React.useState(middlewareStorage.current.collect());
+    const [id, setId] = React.useState<string | null>(null);
 
     React.useEffect(() => {
-        return middlewareStorage.current.on('change', (e) => {
-            setMiddlewares(collect(e.items));
-        });
+        return Forms.create((id) => setId(id));
     }, []);
 
+    // const middlewareStorage = React.useRef(collect<(client: Client) => Client>([]));
+    // const [middlewares, setMiddlewares] = React.useState(middlewareStorage.current.collect());
+
+    // React.useEffect(() => {
+    //     // return middlewareStorage.current.on('change', (e) => {
+    //     //     setMiddlewares(collect(e.items));
+    //     // });
+    //     return Forms.listen(id, (e) => {
+    //         setMiddlewares(collect(e.items));
+    //     });
+    // }, [id]);
+
     const applyMiddlewares = React.useCallback((baseClient: Client) => {
-        return middlewares.reduce((client, middleware) => middleware(client!), baseClient)!;
-    }, [middlewares]);
+        if (id) {
+            return Forms.applyMiddlewares(id, baseClient);
+        }
+        return baseClient;
+    }, [id]);
 
     const [data, setData] = React.useState(initialValues);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -114,20 +126,26 @@ export default function useForm<T extends object>(options: UseFormOptions<T>): U
     }, [debouncedAutoSave, data]);
 
     React.useEffect(() => {
-        if (debug) {
-            log().debug(`Form middleware stack resized to ${middlewares.count()}:`, [...middlewares]);
+        if (id && debug) {
+            return Forms.listen(id, (e) => {
+                log().debug(`Form middleware stack changed to ${e.items.length} items:`, e.items);
+            });
         }
-    }, [debug, middlewares]);
+    }, [id, debug]);
 
     const subscribe = React.useCallback((middleware: (client: Client) => Client) => {
-        middlewareStorage.current.push(middleware);
-        return () => {
-            const index = middlewareStorage.current.search(middleware);
-            if (typeof index === 'number') {
-                middlewareStorage.current.forget(index);
-            }
-        };
-    }, []);
+        // middlewareStorage.current.push(middleware);
+        // return () => {
+        //     const index = middlewareStorage.current.search(middleware);
+        //     if (typeof index === 'number') {
+        //         middlewareStorage.current.forget(index);
+        //     }
+        // };
+        if (id) {
+            return Forms.subscribe(id, middleware);
+        }
+        return () => {};
+    }, [id]);
     
     const form = React.useMemo(() => {
 

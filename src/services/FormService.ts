@@ -1,7 +1,7 @@
-import { Reducible, Str, Collection } from '@luminix/support';
+import { Reducible, Str, Collection, Client, Event, CollectionChanged } from '@luminix/support';
 import { collect, Model, ModelAttribute, ModelType } from '@luminix/core';
 
-import { FormServiceBase, FormServiceInterface, InputPropTypeMap } from '../types/Form';
+import { FormMiddleware, FormServiceBase, FormServiceInterface, InputPropTypeMap, MiddlewareManager } from '../types/Form';
 
 import Checkbox from '../components/Form/Input/Checkbox';
 import DatetimeLocal from '../components/Form/Input/DatetimeLocal';
@@ -12,9 +12,18 @@ import Textarea from '../components/Form/Input/Textarea';
 import Text from '../components/Form/Input/Text';
 import Csrf from '../components/Form/Input/Csrf';
 
+
 class RawFormService implements FormServiceBase {
 
     private includesCsrfToken = false;
+
+    //private middlewares: MiddlewareStorage = {};
+
+    private manager: MiddlewareManager;
+
+    constructor() {
+        this.manager = new (Reducible(class {}))();
+    }
     
     getFormInputComponent(type: string): React.ElementType {
         return this.thisAny().replaceFormInputComponent(
@@ -162,7 +171,32 @@ class RawFormService implements FormServiceBase {
         return baseProps;
     }
 
-    // [reducer: string]: ReducerCallback;
+    private uuid() {
+        return Math.random().toString(36).substring(2);
+    }
+
+    create(callback: (id: string) => void) {
+        const id = this.uuid();
+        callback(id);
+        return () => {
+            this.manager.clearReducer(id);
+        }
+    }
+
+    subscribe(id: string, middleware: FormMiddleware) {
+        return this.manager.reducer(id, middleware);
+    }
+
+    listen(id: string, callback: (e: Event<CollectionChanged<FormMiddleware>, Collection<FormMiddleware>>) => void) {
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        return this.manager.getReducer(id).on('change', callback as any);
+    }
+
+    applyMiddlewares(id: string, client: Client) {
+        // return this.middlewares[id].reduce((client, middleware) => middleware(client!), client)!;
+        return this.manager[id](client);
+    }
+
 
 }
 

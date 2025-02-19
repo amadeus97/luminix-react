@@ -1,7 +1,11 @@
 
-import { Client, Collection, FacadeOf, HasFacadeAccessor, JsonObject, ReducerCallback, ReducibleOf, Response } from '@luminix/support';
+import {
+    Client, Collection, CollectionChanged, Event, FacadeOf, HasFacadeAccessor,
+    JsonObject, ReducerCallback, ReducibleOf, Response, ReducibleInterface
+} from '@luminix/support';
 
 import { ModelType as Model, HttpMethod, ModelSaveOptions, ModelType, ModelAttribute } from '@luminix/core';
+// import { ReducerMethodMap } from '@luminix/support/types/Mixins/Reducible';
 // import { ModelSaveOptions } from '@luminix/core/dist/types/Model';
 // import { HttpMethod } from '@luminix/core/dist/types/Route';
 // import { JsonObject } from '@luminix/core/dist/types/Support';
@@ -149,11 +153,19 @@ export type ModelInputProps<T extends keyof InputPropTypeMap> = HTMLInputProps<T
     type?: T,
 }
 
+
+export type FormMiddleware = (client: Client) => Client;
+export type MiddlewareManager = ReducibleInterface<Record<string, ReducerCallback<Client>>> & Record<string, ReducerCallback<Client>>;
+
 export declare class FormServiceBase {
 
     getFormInputComponent(type: string): React.ElementType;
     getDefaultInputsForModel(item: ModelType, confirmed?: string[]): InputProps<keyof InputPropTypeMap>[];
     ensureFrontendRequestsAreStateful(): void;
+    create(callback: (id: string) => void): () => void;
+    subscribe(id: string, middleware: (client: Client) => Client): () => void;
+    listen(id: string, callback: (e: Event<CollectionChanged<FormMiddleware>, Collection<FormMiddleware>>) => void): () => void; 
+    applyMiddlewares(id: string, client: Client): Client;
 
 }
 
