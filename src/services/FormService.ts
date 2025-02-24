@@ -88,22 +88,29 @@ class RawFormService implements FormServiceBase {
                 return null;
             }
 
-            const castTypeMap: Record<string, string> = this.thisAny().mapAttributeCastToInputTypes({
-                date: 'date',
-                datetime: 'datetime-local',
-                timestamp: 'datetime-local',
-                hashed: 'password',
-                int: 'number',
-                float: 'number',
-                boolean: 'checkbox',
+            const castTypeMap: Record<string, { type: string, addedAttributes?: object }> = this.thisAny().mapAttributeCastToInputTypes({
+                date: { type: 'date' },
+                datetime: { type: 'datetime-local' },
+                timestamp: { type: 'datetime-local' },
+                hashed: {
+                    type: 'password',
+                    addedAttributes: {
+                        autoComplete: 'new-password',
+                    },
+                },
+                int: { type: 'number' },
+                float: { type: 'number' },
+                boolean: { type: 'checkbox' },
             }, item, attribute);
 
             if (attribute.cast && attribute.cast in castTypeMap) {
+                const { type, addedAttributes = {} } = castTypeMap[attribute.cast];
                 return {
                     name: key,
-                    type: castTypeMap[attribute.cast],
+                    type,
                     label: Str.human(key),
                     id,
+                    ...addedAttributes,
                 };
             }
 
