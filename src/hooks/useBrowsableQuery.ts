@@ -22,6 +22,10 @@ export default function useBrowsableQuery(queryFactory: () => Builder) {
         setQuery(
             queryFactory().include(searchParams)
         );
+
+        return () => {
+            setQuery(null);
+        };
     }, [searchParams, queryFactory]);
 
     const replaceLinksWith = React.useMemo(() => {
