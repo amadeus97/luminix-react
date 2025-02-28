@@ -18,7 +18,6 @@ type UseQueryState = Partial<ModelPaginatedResponse> & {
 };
 
 export type UseQueryOptions = {
-    replaceLinksWith?: string;
     method?: 'get' | 'first' | 'all' | 'find';
     page?: number;
     id?: number | string;
@@ -34,7 +33,7 @@ export type UseQueryOptions = {
 export default function useQuery(query: BuilderInterface|null, options: UseQueryOptions = {}) {
 
     const {
-        replaceLinksWith, method = 'get', page = 1, id,
+        method = 'get', page = 1, id,
     } = options;
 
     const [state, setState] = React.useState<UseQueryState>({
@@ -56,7 +55,7 @@ export default function useQuery(query: BuilderInterface|null, options: UseQuery
         }
 
         const params = match(method, {
-            get: () => [page, replaceLinksWith],
+            get: () => [{ page, replaceLinks: true }],
             all: () => [],
             first: () => [],
             find: () => [id],
@@ -68,7 +67,7 @@ export default function useQuery(query: BuilderInterface|null, options: UseQuery
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        query[method](...params as [any, any])
+        query[method](...params as [any])
             .then((response) => {
                 const data = match(method, {
                     get: () => (response as ModelPaginatedResponse).data,
@@ -98,7 +97,7 @@ export default function useQuery(query: BuilderInterface|null, options: UseQuery
                 error: null,
             });
         }
-    }, [query, page, replaceLinksWith, method, id]);
+    }, [query, page, method, id]);
 
     React.useEffect(refresh, [refresh]);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BuilderInterface, ModelType as Model, ModelPaginatedResponse } from '@luminix/core';
 
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import useQuery from './useQuery';
 
@@ -13,8 +13,6 @@ export default function useBrowsableQuery(queryFactory: () => Builder) {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [query, setQuery] = React.useState<Builder|null>(null);
-
-    const location = useLocation();
 
     const page = searchParams.has('page') ? Number(searchParams.get('page')) : 1;
     
@@ -28,11 +26,7 @@ export default function useBrowsableQuery(queryFactory: () => Builder) {
         };
     }, [searchParams, queryFactory]);
 
-    const replaceLinksWith = React.useMemo(() => {
-        return `${location.pathname}?${searchParams.toString()}`;
-    }, [location.pathname, searchParams]);
-
-    const queryResults = useQuery(query, { replaceLinksWith, page });
+    const queryResults = useQuery(query, { page });
 
     // redirect to last page if current page is higher than last page
     const {
